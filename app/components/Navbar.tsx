@@ -2,6 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  Menu,
+  X,
+  Search,
+  Heart,
+  ShoppingBag,
+} from "lucide-react";
 
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -36,19 +43,25 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-[#F8F4EE]/90 backdrop-blur-xl border-b border-[#E7DDCC] shadow-lg"
-            : "bg-[#F8F4EE] border-b border-[#E7DDCC]"
+            ? "bg-[#F8F4EE]/80 backdrop-blur-2xl border-b border-[#ECE4D8] shadow-lg"
+            : "bg-[#F8F4EE]/95 border-b border-[#ECE4D8]"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 md:h-24 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <Link
-            href="/"
-            className="text-xl sm:text-2xl md:text-3xl font-serif text-[#A88442] tracking-wide whitespace-nowrap"
-          >
-            FRAGRÉ DE RIVA
-          </Link>
+  href="/"
+  className="font-serif tracking-[0.18em] text-[#A88442] transition hover:opacity-80 whitespace-nowrap"
+>
+  <span className="hidden md:block text-3xl">
+    FRAGRÉ DE RIVA
+  </span>
+
+  <span className="block md:hidden text-xl">
+    FRAGRÉ
+  </span>
+</Link>
 
           <div className="hidden md:flex gap-8 text-[#2B241A] font-medium">
             <Link href="/" className="hover:text-[#A88442] transition">
