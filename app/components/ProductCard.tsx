@@ -21,13 +21,14 @@ export default function ProductCard({ product }: Props) {
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   return (
-    <div className="group overflow-hidden rounded-[32px] bg-white shadow-lg border border-[#E7DDCC] transition hover:-translate-y-1 hover:shadow-2xl">
+    <div className="group overflow-hidden rounded-3xl bg-white border border-[#E7DDCC] shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
       <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-square bg-[#F8F4EE] overflow-hidden">
+
           {isImageLoading && (
-            <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-[#f1e7d8] via-[#fbf7f2] to-[#efe1cd]">
+            <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-[#F1E7D8] via-[#FBF7F2] to-[#EFE1CD]">
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-16 w-16 rounded-full border-4 border-[#D6C7AB] border-t-[#A88442] animate-spin" />
+                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full border-4 border-[#D6C7AB] border-t-[#A88442] animate-spin" />
               </div>
             </div>
           )}
@@ -36,32 +37,36 @@ export default function ProductCard({ product }: Props) {
             src={product.image}
             alt={product.name}
             fill
-            className={`object-cover transition duration-500 group-hover:scale-105 ${
+            className={`object-cover transition-all duration-500 group-hover:scale-105 ${
               isImageLoading ? "opacity-0" : "opacity-100"
             }`}
             onLoadingComplete={() => setIsImageLoading(false)}
-            sizes="(max-width: 768px) 100vw, 25vw"
+            sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
           />
         </div>
 
-        <div className="p-6">
-          <p className="text-xs uppercase tracking-[0.25em] text-[#A88442] mb-3">
+        <div className="p-4 sm:p-6">
+
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#A88442] mb-2 sm:mb-3">
             {product.category}
           </p>
 
-          <h3 className="text-2xl font-serif text-[#2B241A] mb-3">
+          <h3 className="text-lg sm:text-xl lg:text-2xl font-serif text-[#2B241A] leading-snug mb-3 line-clamp-2">
             {product.name}
           </h3>
 
           <div className="flex items-center justify-between">
-            <p className="text-xl font-bold text-[#A88442]">
+
+            <p className="text-lg sm:text-xl font-bold text-[#A88442]">
               ৳{product.price}
             </p>
 
-            <span className="text-sm text-gray-500 group-hover:text-[#A88442] transition">
+            <span className="text-xs sm:text-sm text-gray-500 group-hover:text-[#A88442] transition">
               View →
             </span>
+
           </div>
+
         </div>
       </Link>
     </div>

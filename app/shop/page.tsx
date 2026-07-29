@@ -47,19 +47,19 @@ export default function ShopPage() {
 
   return (
     <main className="bg-[#F8F4EE] min-h-screen py-32">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
           <p className="uppercase tracking-[0.4em] text-[#A88442]">
             Collection
           </p>
 
-          <h1 className="text-6xl font-serif text-[#A88442] mt-4">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif text-[#A88442] mt-4">
             Shop
           </h1>
         </div>
 
         {/* Controls */}
-        <div className="grid gap-4 md:grid-cols-3 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
           <div>
             <label className="block text-sm uppercase tracking-[0.2em] text-gray-500 mb-3">
               Search
@@ -110,7 +110,7 @@ export default function ShopPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
           <p className="text-gray-500">
             Showing {filteredProducts.length} product(s)
           </p>
@@ -130,8 +130,8 @@ export default function ShopPage() {
         </div>
 
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-24">
-            <p className="text-3xl font-serif text-[#A88442]">
+          <div className="text-center py-16 sm:py-24">
+            <p className="text-2xl sm:text-3xl font-serif text-[#A88442]">
               No products found
             </p>
             <p className="text-gray-500 mt-3">
@@ -139,7 +139,7 @@ export default function ShopPage() {
             </p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

@@ -42,10 +42,10 @@ export default function Navbar() {
             : "bg-[#F8F4EE] border-b border-[#E7DDCC]"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 md:h-24 flex items-center justify-between">
           <Link
             href="/"
-            className="text-2xl md:text-3xl font-serif text-[#A88442] tracking-wide"
+            className="text-xl sm:text-2xl md:text-3xl font-serif text-[#A88442] tracking-wide whitespace-nowrap"
           >
             FRAGRÉ DE RIVA
           </Link>
@@ -73,16 +73,16 @@ export default function Navbar() {
           </div>
           <button
   onClick={() => setMenuOpen(!menuOpen)}
-  className="md:hidden w-12 h-12 rounded-full border border-[#A88442] flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+  className="md:hidden w-10 h-10 rounded-full border border-[#A88442] flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
   aria-label="Toggle Menu"
 >
   {menuOpen ? "✕" : "☰"}
 </button>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={() => setSearchOpen(true)}
-              className="relative w-12 h-12 rounded-full border border-[#A88442] flex items-center justify-center text-xl text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+              className="relative w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#A88442] flex items-center justify-center text-xl text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
               aria-label="Search"
             >
               🔍
@@ -90,12 +90,12 @@ export default function Navbar() {
 
             <Link
               href="/wishlist"
-              className="relative w-12 h-12 rounded-full border border-[#A88442] flex items-center justify-center text-xl text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+              className="relative w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#A88442] flex items-center justify-center text-xl text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
             >
               ❤️
 
               {totalWishlist > 0 && (
-                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
                   {totalWishlist}
                 </span>
               )}
@@ -103,15 +103,16 @@ export default function Navbar() {
 
             <button
               onClick={() => setCartOpen(true)}
-              className={`relative px-6 py-3 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300 ${
+              className={`relative px-3 md:px-6 py-2.5 md:py-3 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300 ${
                 cartUpdated ? "scale-105" : "scale-100"
               }`}
             >
-              🛒 Cart
+              <span className="text-lg">🛒</span>
+<span className="hidden md:inline ml-2">Cart</span>
 
               {totalItems > 0 && (
                 <span
-                  className={`absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#A88442] text-white text-xs font-bold flex items-center justify-center transition-transform duration-300 ${
+                  className={`absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#A88442] text-white text-xs font-bold flex items-center justify-center transition-transform duration-300 ${
                     cartUpdated ? "scale-125" : "scale-100"
                   }`}
                 >
@@ -132,7 +133,7 @@ export default function Navbar() {
         </div>
         {menuOpen && (
   <div className="md:hidden bg-[#F8F4EE] border-t border-[#E7DDCC] shadow-lg">
-    <div className="flex flex-col px-6 py-6 gap-5">
+    <div className="flex flex-col px-5 py-5 gap-5">
 
       <Link
         href="/"
