@@ -1,19 +1,28 @@
-export const coupons = [
+export type Coupon = {
+  code: string;
+  type: "percent" | "fixed";
+  value: number;
+};
+
+export const coupons: Coupon[] = [
   {
-    code: "RIVA10",
+    code: "WELCOME10",
     type: "percent",
     value: 10,
   },
-
   {
-    code: "WELCOME",
+    code: "RIVA15",
     type: "percent",
-    value: 5,
+    value: 15,
   },
-
   {
-    code: "FREESHIP",
+    code: "SAVE200",
     type: "fixed",
-    value: 100,
+    value: 200,
   },
-] as const;
+  {
+    code: "LUXURY500",
+    type: "fixed",
+    value: 500,
+  },
+];

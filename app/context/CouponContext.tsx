@@ -8,11 +8,7 @@ import {
   ReactNode,
 } from "react";
 
-type Coupon = {
-  code: string;
-  type: "percent" | "fixed";
-  discount: number;
-};
+import { coupons, Coupon } from "../components/coupons";
 
 type CouponContextType = {
   coupon: Coupon | null;
@@ -21,51 +17,17 @@ type CouponContextType = {
 };
 
 const CouponContext =
-  createContext<CouponContextType | null>(
-    null
-  );
-
-/* -----------------------------
-   Available Coupons
---------------------------------*/
-
-const COUPONS: Coupon[] = [
-  {
-    code: "WELCOME10",
-    type: "percent",
-    discount: 10,
-  },
-
-  {
-    code: "RIVA15",
-    type: "percent",
-    discount: 15,
-  },
-
-  {
-    code: "SAVE200",
-    type: "fixed",
-    discount: 200,
-  },
-
-  {
-    code: "LUXURY500",
-    type: "fixed",
-    discount: 500,
-  },
-];
+  createContext<CouponContextType | null>(null);
 
 export function CouponProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const [coupon, setCoupon] =
-    useState<Coupon | null>(null);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
 
   useEffect(() => {
-    const saved =
-      localStorage.getItem("coupon");
+    const saved = localStorage.getItem("coupon");
 
     if (saved) {
       setCoupon(JSON.parse(saved));
@@ -84,16 +46,17 @@ export function CouponProvider({
   }, [coupon]);
 
   function applyCoupon(code: string) {
-    const found = COUPONS.find(
+    const found = coupons.find(
       (item) =>
-        item.code ===
+        item.code.toUpperCase() ===
         code.trim().toUpperCase()
     );
 
-    if (!found) return false;
+    if (!found) {
+      return false;
+    }
 
     setCoupon(found);
-
     return true;
   }
 
@@ -115,8 +78,7 @@ export function CouponProvider({
 }
 
 export function useCoupon() {
-  const context =
-    useContext(CouponContext);
+  const context = useContext(CouponContext);
 
   if (!context) {
     throw new Error(

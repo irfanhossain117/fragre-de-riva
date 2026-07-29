@@ -31,81 +31,81 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+  setScrolled(window.scrollY > 20);
+
+  if (menuOpen) {
+    setMenuOpen(false);
+  }
+};
 
     window.addEventListener("scroll", handleScroll);
 
     return () =>
       window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [menuOpen]);
 
   return (
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-[#F8F4EE]/80 backdrop-blur-2xl border-b border-[#ECE4D8] shadow-lg"
+            ? "bg-[#F8F4EE]/80 backdrop-blur-2xl border-b border-[#ECE4D8] shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
             : "bg-[#F8F4EE]/95 border-b border-[#ECE4D8]"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
-          <Link
+<Link
   href="/"
-  className="font-serif tracking-[0.18em] text-[#A88442] transition hover:opacity-80 whitespace-nowrap"
+  className="font-serif text-[#A88442] transition hover:opacity-80 whitespace-nowrap"
 >
-  <span className="hidden md:block text-3xl">
+  <span className="text-lg sm:text-xl md:text-3xl tracking-[0.12em]">
     FRAGRÉ DE RIVA
-  </span>
-
-  <span className="block md:hidden text-xl">
-    FRAGRÉ
   </span>
 </Link>
 
           <div className="hidden md:flex gap-8 text-[#2B241A] font-medium">
-            <Link href="/" className="hover:text-[#A88442] transition">
+            <Link href="/" className="transition-all duration-300 hover:text-[#A88442] hover:-translate-y-0.5">
               Home
             </Link>
 
-            <Link href="/shop" className="hover:text-[#A88442] transition">
+            <Link href="/shop" className="transition-all duration-300 hover:text-[#A88442] hover:-translate-y-0.5">
               Shop
             </Link>
 
-            <Link href="/wishlist" className="hover:text-[#A88442] transition">
+            <Link href="/wishlist" className="transition-all duration-300 hover:text-[#A88442] hover:-translate-y-0.5">
               Wishlist
             </Link>
 
-            <Link href="/story" className="hover:text-[#A88442] transition">
+            <Link href="/story" className="transition-all duration-300 hover:text-[#A88442] hover:-translate-y-0.5">
               Story
             </Link>
 
-            <Link href="/#footer" className="hover:text-[#A88442] transition">
+            <Link href="/#footer" className="transition-all duration-300 hover:text-[#A88442] hover:-translate-y-0.5">
               Contact
             </Link>
           </div>
           <button
   onClick={() => setMenuOpen(!menuOpen)}
-  className="md:hidden w-10 h-10 rounded-full border border-[#A88442] flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+  className="md:hidden w-10 h-10 rounded-full border border-[#E7DDCC] bg-white/70 backdrop-blur-md flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300"
   aria-label="Toggle Menu"
 >
-  {menuOpen ? "✕" : "☰"}
+  {menuOpen ? <X size={20} /> : <Menu size={20} />}
 </button>
 
           <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={() => setSearchOpen(true)}
-              className="relative w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#A88442] flex items-center justify-center text-xl text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+              className="relative w-10 h-10 md:w-11 md:h-11 rounded-full border border-[#E7DDCC] bg-white/70 backdrop-blur-md flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300"
               aria-label="Search"
             >
-              🔍
+              <Search size={18} />
             </button>
 
             <Link
               href="/wishlist"
               className="relative w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#A88442] flex items-center justify-center text-xl text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
             >
-              ❤️
+              <Heart size={18} />
 
               {totalWishlist > 0 && (
                 <span className="absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
@@ -116,16 +116,16 @@ export default function Navbar() {
 
             <button
               onClick={() => setCartOpen(true)}
-              className={`relative px-3 md:px-6 py-2.5 md:py-3 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300 ${
+              className={`relative flex items-center justify-center px-3 md:px-5 py-2.5 md:py-3 rounded-full border border-[#E7DDCC] bg-white/70 backdrop-blur-md text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300 ${
                 cartUpdated ? "scale-105" : "scale-100"
               }`}
             >
-              <span className="text-lg">🛒</span>
+              <ShoppingBag size={18} />
 <span className="hidden md:inline ml-2">Cart</span>
 
               {totalItems > 0 && (
                 <span
-                  className={`absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#A88442] text-white text-xs font-bold flex items-center justify-center transition-transform duration-300 ${
+                  className={`absolute -top-1.5 -right-1.5 w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#A88442] text-white text-xs font-bold flex items-center justify-center transition-transform duration-300 ${
                     cartUpdated ? "scale-125" : "scale-100"
                   }`}
                 >
@@ -138,20 +138,26 @@ export default function Navbar() {
               href="https://wa.me/8801511856101"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex px-6 py-3 rounded-full bg-[#A88442] text-white hover:opacity-90 transition"
+              className="hidden lg:flex px-6 py-3 rounded-full bg-[#A88442] text-white hover:opacity-90 transition"
             >
               WhatsApp
             </a>
           </div>
         </div>
-        {menuOpen && (
-  <div className="md:hidden bg-[#F8F4EE] border-t border-[#E7DDCC] shadow-lg">
-    <div className="flex flex-col px-5 py-5 gap-5">
+        <div
+  className={`md:hidden overflow-hidden transition-all duration-500 ${
+    menuOpen
+      ? "max-h-[500px] opacity-100"
+      : "max-h-0 opacity-0"
+  }`}
+>
+  <div className="mx-3 mb-3 rounded-3xl bg-white/80 backdrop-blur-xl border border-[#ECE4D8] shadow-2xl">
+    <div className="flex flex-col p-4 gap-2">
 
       <Link
         href="/"
         onClick={() => setMenuOpen(false)}
-        className="text-[#2B241A] hover:text-[#A88442]"
+        className="rounded-2xl px-4 py-4 text-[#2B241A] hover:bg-[#F8F4EE] hover:text-[#A88442] transition-all duration-300"
       >
         Home
       </Link>
@@ -159,7 +165,7 @@ export default function Navbar() {
       <Link
         href="/shop"
         onClick={() => setMenuOpen(false)}
-        className="text-[#2B241A] hover:text-[#A88442]"
+        className="rounded-2xl px-4 py-4 text-[#2B241A] hover:bg-[#F8F4EE] hover:text-[#A88442] transition-all duration-300"
       >
         Shop
       </Link>
@@ -167,7 +173,7 @@ export default function Navbar() {
       <Link
         href="/wishlist"
         onClick={() => setMenuOpen(false)}
-        className="text-[#2B241A] hover:text-[#A88442]"
+        className="rounded-2xl px-4 py-4 text-[#2B241A] hover:bg-[#F8F4EE] hover:text-[#A88442] transition-all duration-300"
       >
         Wishlist
       </Link>
@@ -175,7 +181,7 @@ export default function Navbar() {
       <Link
         href="/story"
         onClick={() => setMenuOpen(false)}
-        className="text-[#2B241A] hover:text-[#A88442]"
+        className="rounded-2xl px-4 py-4 text-[#2B241A] hover:bg-[#F8F4EE] hover:text-[#A88442] transition-all duration-300"
       >
         Our Story
       </Link>
@@ -184,14 +190,14 @@ export default function Navbar() {
         href="https://wa.me/8801511856101"
         target="_blank"
         rel="noopener noreferrer"
-        className="bg-[#A88442] text-white text-center py-3 rounded-full"
+        className="mt-3 rounded-2xl bg-[#A88442] py-4 text-center font-medium text-white transition hover:scale-[1.02] hover:opacity-90"
       >
         WhatsApp
       </a>
 
     </div>
   </div>
-)}
+</div>
       </nav>
 
       <SearchModal

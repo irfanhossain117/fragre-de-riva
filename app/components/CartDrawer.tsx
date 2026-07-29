@@ -35,9 +35,9 @@ export default function CartDrawer({
       ? 0
       : coupon.type === "percent"
       ? Math.round(
-          subtotal * (coupon.discount / 100)
+          subtotal * (coupon.value / 100)
         )
-      : coupon.discount;
+      : coupon.value;
 
   const delivery = 0;
 
