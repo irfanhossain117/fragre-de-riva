@@ -28,7 +28,7 @@ export const products = [
     baseNotes: "Defeat, Tears",
 
     volume: "50ml",
-    category: "Funny Collection",
+    category: "Male Collection",
 
     rating: 4.9,
     reviews: 127,
