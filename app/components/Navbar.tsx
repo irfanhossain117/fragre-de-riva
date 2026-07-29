@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  Home,
   Menu,
   X,
   Search,
@@ -53,7 +54,7 @@ export default function Navbar() {
             : "bg-[#F8F4EE]/95 border-b border-[#ECE4D8]"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-center md:justify-between">
 <Link
   href="/"
   className="font-serif text-[#A88442] transition hover:opacity-80 whitespace-nowrap"
@@ -86,13 +87,12 @@ export default function Navbar() {
           </div>
           <button
   onClick={() => setMenuOpen(!menuOpen)}
-  className="md:hidden w-10 h-10 rounded-full border border-[#E7DDCC] bg-white/70 backdrop-blur-md flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300"
-  aria-label="Toggle Menu"
+  className="hidden md:flex w-10 h-10 rounded-full border border-[#E7DDCC] bg-white/70 backdrop-blur-md items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300"
 >
   {menuOpen ? <X size={20} /> : <Menu size={20} />}
 </button>
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <button
               onClick={() => setSearchOpen(true)}
               className="relative w-10 h-10 md:w-11 md:h-11 rounded-full border border-[#E7DDCC] bg-white/70 backdrop-blur-md flex items-center justify-center text-[#A88442] hover:bg-[#A88442] hover:text-white transition-all duration-300"
@@ -209,6 +209,85 @@ export default function Navbar() {
         open={cartOpen}
         onClose={() => setCartOpen(false)}
       />
+      {/* ---------------- Mobile Bottom Navigation ---------------- */}
+<div className="fixed bottom-0 left-0 right-0 md:hidden z-50 px-3 pb-3">
+  <div className="rounded-3xl border border-[#E7DDCC] bg-[#F8F4EE]/95 backdrop-blur-xl shadow-2xl">
+
+    <div className="grid grid-cols-5">
+
+      {/* Home */}
+      <Link
+        href="/"
+        className="flex flex-col items-center justify-center py-3 text-[#A88442]"
+      >
+        <Home size={20} />
+        <span className="text-[11px] mt-1">Home</span>
+      </Link>
+
+      {/* Search */}
+      <button
+        onClick={() => setSearchOpen(true)}
+        className="flex flex-col items-center justify-center py-3 text-[#A88442]"
+      >
+        <Search size={20} />
+        <span className="text-[11px] mt-1">Search</span>
+      </button>
+
+      {/* Wishlist */}
+      <Link
+        href="/wishlist"
+        className="relative flex flex-col items-center justify-center py-3 text-[#A88442]"
+      >
+        <Heart size={20} />
+
+        {totalWishlist > 0 && (
+          <span className="absolute top-2 right-5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white font-bold">
+            {totalWishlist}
+          </span>
+        )}
+
+        <span className="text-[11px] mt-1">
+          Wishlist
+        </span>
+      </Link>
+
+      {/* Cart */}
+      <button
+        onClick={() => setCartOpen(true)}
+        className="relative flex flex-col items-center justify-center py-3 text-[#A88442]"
+      >
+        <ShoppingBag size={20} />
+
+        {totalItems > 0 && (
+          <span className="absolute top-2 right-5 flex h-5 w-5 items-center justify-center rounded-full bg-[#A88442] text-[10px] text-white font-bold">
+            {totalItems}
+          </span>
+        )}
+
+        <span className="text-[11px] mt-1">
+          Cart
+        </span>
+      </button>
+
+      {/* Menu */}
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="flex flex-col items-center justify-center py-3 text-[#A88442]"
+      >
+        {menuOpen ? (
+          <X size={20} />
+        ) : (
+          <Menu size={20} />
+        )}
+
+        <span className="text-[11px] mt-1">
+          Menu
+        </span>
+      </button>
+
+    </div>
+  </div>
+</div>
     </>
   );
 }
