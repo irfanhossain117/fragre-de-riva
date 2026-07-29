@@ -63,7 +63,7 @@ export const products = [
     baseNotes: "Amber, Musk",
 
     volume: "50ml",
-    category: "Luxury Collection",
+    category: "Female Collection",
 
     rating: 4.9,
     reviews: 127,
