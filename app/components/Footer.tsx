@@ -27,7 +27,7 @@ export default function Footer() {
 
             <div className="space-y-3 text-gray-400">
               <p>+8801511-856101</p>
-              <p>fragrederiva@protonmail.com</p>
+              <p><a href="mailto:fragrederiva@protonmail.com" className="text-[#C9A86A] hover:underline">fragrederiva@protonmail.com</a></p>
               <p>Bangladesh</p>
             </div>
           </div>
@@ -75,7 +75,25 @@ export default function Footer() {
           Website and Design by Irfan Hossain (Cofounder of Fragré de Riva)
         </div>
         <div className=" text-center text-gray-500">
-          For any inquiries regarding the website, please contact me at <a href="connect.irfanhossain@gmail.com" className="text-[#C9A86A] hover:underline">connect.irfanhossain@gmail.com</a>
+          For For any inquiries regarding the website, please contact me at <a href="mailto:connect.irfanhossain@gmail.com" className="text-[#C9A86A] hover:underline">connect.irfanhossain@gmail.com</a>
+        </div>
+        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+          Founders of Riva:
+        </div>
+        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+          Ahin Kaiser
+        </div>
+        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+          Irfan Hossain Nishat
+        </div>
+        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+          Azharul Islam Rahi
+        </div>
+        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+          Rahat Chowdhury
+        </div>
+        <div className=" text-center text-gray-500">
+          
         </div>
       </div>
     </footer>

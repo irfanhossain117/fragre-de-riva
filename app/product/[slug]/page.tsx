@@ -119,4 +119,4 @@ export default async function ProductPage({
       </section>
     </main>
   );
-}
+} 
