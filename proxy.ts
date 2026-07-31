@@ -3,17 +3,17 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
   const { pathname } = req.nextUrl;
 
-  // login page always allowed
+  // Allow login page
   if (pathname === "/admin/login") {
     return NextResponse.next();
   }
 
-  // protect all admin routes
+  // Protect admin routes
   if (pathname.startsWith("/admin")) {
     if (!token) {
       return NextResponse.redirect(

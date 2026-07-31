@@ -80,16 +80,16 @@ export default function Footer() {
         <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
           Founders of Riva:
         </div>
-        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+        <div className=" text-center text-[#C9A86A]">
           Ahin Kaiser
         </div>
-        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+        <div className=" text-center  text-[#C9A86A]">
           Irfan Hossain Nishat
         </div>
-        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+        <div className="text-center  text-[#C9A86A]">
           Azharul Islam Rahi
         </div>
-        <div className="border-t border-white/10 mt-16 pt-8 text-center text-gray-500">
+        <div className=" text-center text-[#C9A86A]">
           Rahat Chowdhury
         </div>
         <div className=" text-center text-gray-500">
