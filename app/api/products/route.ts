@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
+import type { Variant, ProductInput } from "@/types/product";
+
 
 export async function GET() {
   try {
@@ -33,7 +35,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    const body = await req.json();
+    const body = (await req.json()) as ProductInput;
 
     const {
       name,
@@ -56,7 +58,16 @@ export async function POST(req: NextRequest) {
       baseNotes,
     } = body;
 
-    if (!name || !slug || !brand || !category) {
+    // =========================
+    // Required Fields
+    // =========================
+
+    if (
+      !name?.trim() ||
+      !slug?.trim() ||
+      !brand?.trim() ||
+      !category?.trim()
+    ) {
       return NextResponse.json(
         {
           success: false,
@@ -67,6 +78,64 @@ export async function POST(req: NextRequest) {
         }
       );
     }
+
+    // =========================
+    // Variant Validation
+    // =========================
+
+    if (!Array.isArray(variants) || variants.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "At least one product variant is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    for (const variant of variants) {
+      if (!variant.volume?.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Variant volume is required.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (variant.price < 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Price cannot be negative.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (variant.stock < 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Stock cannot be negative.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+    }
+
+    // =========================
+    // Slug Check
+    // =========================
 
     const existingSlug = await Product.findOne({ slug });
 
@@ -82,14 +151,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const totalStock =
-      Array.isArray(variants)
-        ? variants.reduce(
-            (sum: number, item: any) =>
-              sum + (item.stock || 0),
-            0
-          )
-        : 0;
+    // =========================
+    // Total Stock
+    // =========================
+
+    const totalStock = variants.reduce(
+      (sum: number, item: Variant) => sum + item.stock,
+      0
+    );
+
+    // =========================
+    // Create Product
+    // =========================
 
     const product = await Product.create({
       name,

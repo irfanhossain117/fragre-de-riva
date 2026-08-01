@@ -2,15 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { Product } from "@/types/product";
 
-interface Product {
-  _id: string;
-  name: string;
-  brand: string;
-  category: string;
-  featured: boolean;
-  bestSeller: boolean;
-}
+
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);

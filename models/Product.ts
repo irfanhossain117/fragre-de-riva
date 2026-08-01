@@ -192,6 +192,29 @@ const ProductSchema = new Schema(
   }
 );
 
+// =========================
+// Auto Thumbnail Image
+// =========================
+
+ProductSchema.pre("save", async function () {
+  if ((!this.image || this.image === "") && this.images.length > 0) {
+    this.image = this.images[0];
+  }
+});
+
+// =========================
+// Database Indexes
+// =========================
+
+ProductSchema.index({ slug: 1 });
+ProductSchema.index({ category: 1 });
+ProductSchema.index({ featured: 1 });
+ProductSchema.index({ bestSeller: 1 });
+ProductSchema.index({ isPublished: 1 });
+ProductSchema.index({
+  name: "text",
+  description: "text",
+});
 const Product =
   models.Product || model("Product", ProductSchema);
 

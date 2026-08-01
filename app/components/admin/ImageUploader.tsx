@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 
 interface ImageUploaderProps {
   images: string[];
@@ -33,11 +34,13 @@ export default function ImageUploader({
           body: formData,
         });
 
-        const data = await res.json();
+const data = await res.json();
 
-        if (data.success) {
-          uploaded.push(data.url);
-        }
+if (!res.ok || !data.success) {
+    throw new Error(data.message || "Upload failed");
+}
+
+uploaded.push(data.url);
       }
 
       setImages((prev) => [...prev, ...uploaded]);
@@ -45,8 +48,12 @@ export default function ImageUploader({
       console.error(error);
       alert("Image upload failed.");
     } finally {
-      setUploading(false);
+    if (inputRef.current) {
+        inputRef.current.value = "";
     }
+
+    setUploading(false);
+}
   }
 
   function removeImage(index: number) {
@@ -84,11 +91,13 @@ export default function ImageUploader({
               key={index}
               className="relative overflow-hidden rounded-xl border"
             >
-              <img
-                src={image}
-                alt={`Product ${index + 1}`}
-                className="h-40 w-full object-cover"
-              />
+              <Image
+  src={image}
+  alt={`Product ${index + 1}`}
+  width={500}
+  height={500}
+  className="h-40 w-full object-cover rounded-xl"
+/>
 
               <button
                 type="button"
