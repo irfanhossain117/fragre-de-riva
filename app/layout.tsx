@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { CouponProvider } from "./context/CouponContext";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Fragré de Riva | Premium Fragrances in Bangladesh",
@@ -88,6 +89,7 @@ export default function RootLayout({
             </CartProvider>
           </WishlistProvider>
         </CouponProvider>
+        <Analytics />
       </body>
     </html>
   );
