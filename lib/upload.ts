@@ -1,30 +1,51 @@
-import fs from "fs";
-import path from "path";
+import mongoose, { Mongoose } from "mongoose";
 
-const DEFAULT_UPLOAD_DIR = path.join(
-  process.cwd(),
-  "public",
-  "uploads",
-  "products"
-);
+const MONGODB_URI = process.env.MONGODB_URI as string;
 
-/**
- * Upload directory
- *
- * Priority:
- * 1. process.env.UPLOAD_DIR
- * 2. Local default folder
- */
-export const UPLOAD_DIR =
-  process.env.UPLOAD_DIR || DEFAULT_UPLOAD_DIR;
+if (!process.env.MONGODB_URI) {
+  throw new Error("Please define MONGODB_URI inside .env.local");
+}
 
-/**
- * Create upload directory if it doesn't exist.
- */
-export function ensureUploadDir(): void {
-  if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, {
-      recursive: true,
-    });
+declare global {
+  var mongoose:
+    | {
+        conn: Mongoose | null;
+        promise: Promise<Mongoose> | null;
+      }
+    | undefined;
+}
+
+const cached = global.mongoose ?? {
+  conn: null,
+  promise: null,
+};
+
+global.mongoose = cached;
+
+export async function connectDB(): Promise<Mongoose> {
+  if (cached.conn) {
+    return cached.conn;
   }
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URI, {
+        dbName: "perfume_db",
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+      })
+      .catch((err) => {
+        cached.promise = null; // Connection fail korle promise reset hobe jate porer call-e abar retry kore
+        throw err;
+      });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null;
+    throw error;
+  }
+
+  return cached.conn;
 }

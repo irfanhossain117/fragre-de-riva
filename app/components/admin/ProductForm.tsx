@@ -10,8 +10,6 @@ interface ProductFormProps {
   product?: Product;
 }
 
-
-
 export default function ProductForm({
   editMode = false,
   product,
@@ -20,50 +18,55 @@ export default function ProductForm({
 
   const [loading, setLoading] = useState(false);
 
-  // Basic Info
+  // =========================
+  // Basic Information
+  // =========================
 
   const [name, setName] = useState(product?.name ?? "");
 
   const [slug, setSlug] = useState(product?.slug ?? "");
 
-  const [brand, setBrand] = useState(
-    product?.brand ?? ""
-  );
+  const [brand, setBrand] = useState(product?.brand ?? "");
 
   const [category, setCategory] = useState(
     product?.category ?? ""
   );
 
-  const [sku, setSku] = useState(
-    product?.sku ?? ""
+  const [sku, setSku] = useState(product?.sku ?? "");
+
+  const [description, setDescription] = useState(
+    product?.description ?? ""
   );
 
-  const [description, setDescription] =
-    useState(product?.description ?? "");
-
+  // =========================
   // Notes
+  // =========================
 
   const [topNotes, setTopNotes] = useState(
     product?.topNotes ?? ""
   );
 
-  const [heartNotes, setHeartNotes] =
-    useState(product?.heartNotes ?? "");
+  const [heartNotes, setHeartNotes] = useState(
+    product?.heartNotes ?? ""
+  );
 
   const [baseNotes, setBaseNotes] = useState(
     product?.baseNotes ?? ""
   );
 
+  // =========================
   // Images
+  // =========================
 
-  const [galleryImages, setGalleryImages] =
-    useState<string[]>(product?.images ?? []);
+  const [galleryImages, setGalleryImages] = useState<string[]>(
+    product?.images ?? []
+  );
 
-  // Variant
+  // =========================
+  // Variants
+  // =========================
 
-  const [variants, setVariants] = useState<
-    Variant[]
-  >(
+  const [variants, setVariants] = useState<Variant[]>(
     product?.variants ?? [
       {
         volume: "",
@@ -73,32 +76,42 @@ export default function ProductForm({
     ]
   );
 
+  // =========================
   // Homepage
+  // =========================
 
   const [featured, setFeatured] = useState(
     product?.featured ?? false
   );
 
-  const [bestSeller, setBestSeller] =
-    useState(product?.bestSeller ?? false);
+  const [bestSeller, setBestSeller] = useState(
+    product?.bestSeller ?? false
+  );
 
-  const [isPublished, setIsPublished] =
-    useState(product?.isPublished ?? true);
+  const [isPublished, setIsPublished] = useState(
+    product?.isPublished ?? true
+  );
 
+  // =========================
   // SEO
+  // =========================
 
   const [seoTitle, setSeoTitle] = useState(
     product?.seoTitle ?? ""
   );
 
-  const [seoDescription, setSeoDescription] =
-    useState(product?.seoDescription ?? "");
+  const [seoDescription, setSeoDescription] = useState(
+    product?.seoDescription ?? ""
+  );
 
-  const [seoKeywords, setSeoKeywords] =
-    useState(
-      product?.seoKeywords?.join(", ") ?? ""
-    );
-      function generateSlug(text: string) {
+  const [seoKeywords, setSeoKeywords] = useState(
+    product?.seoKeywords?.join(", ") ?? ""
+  );
+
+  // =========================
+  // Helper Functions
+  // =========================
+    function generateSlug(text: string) {
     return text
       .toLowerCase()
       .trim()
@@ -149,6 +162,21 @@ export default function ProductForm({
         return;
       }
 
+      if (!brand.trim()) {
+        alert("Brand is required.");
+        return;
+      }
+
+      if (!category.trim()) {
+        alert("Category is required.");
+        return;
+      }
+
+      if (!slug.trim()) {
+        alert("Slug is required.");
+        return;
+      }
+
       if (galleryImages.length === 0) {
         alert("Upload at least one image.");
         return;
@@ -179,9 +207,9 @@ export default function ProductForm({
         seoDescription,
 
         seoKeywords: seoKeywords
-  .split(",")
-  .map((k: string) => k.trim())
-  .filter(Boolean)
+          .split(",")
+          .map((k) => k.trim())
+          .filter(Boolean),
       };
 
       const endpoint = editMode
@@ -212,7 +240,34 @@ export default function ProductForm({
       );
 
       if (!editMode) {
+        setName("");
+        setSlug("");
+        setBrand("");
+        setCategory("");
+        setSku("");
+        setDescription("");
+
+        setTopNotes("");
+        setHeartNotes("");
+        setBaseNotes("");
+
         setGalleryImages([]);
+
+        setVariants([
+          {
+            volume: "",
+            price: 0,
+            stock: 0,
+          },
+        ]);
+
+        setFeatured(false);
+        setBestSeller(false);
+        setIsPublished(true);
+
+        setSeoTitle("");
+        setSeoDescription("");
+        setSeoKeywords("");
       }
 
       router.push("/admin/dashboard/products");
@@ -224,9 +279,9 @@ export default function ProductForm({
       setLoading(false);
     }
   }
-    return (
-    <div className="rounded-3xl bg-white p-8 shadow">
 
+  return (
+        <div className="rounded-3xl bg-white p-8 shadow">
       <h2 className="mb-8 text-3xl font-bold">
         {editMode ? "Edit Product" : "Add Product"}
       </h2>
@@ -261,7 +316,7 @@ export default function ProductForm({
 
           <input
             value={slug}
-            onChange={(e) => setSlug(e.target.value)}
+            onChange={(e) => setSlug(generateSlug(e.target.value))}
             className="w-full rounded-xl border bg-gray-100 p-4"
           />
         </div>
@@ -319,7 +374,7 @@ export default function ProductForm({
           />
         </div>
 
-        {/* Notes */}
+        {/* Fragrance Notes */}
         <div className="grid grid-cols-3 gap-4">
 
           <input
@@ -344,12 +399,11 @@ export default function ProductForm({
           />
 
         </div>
-
-        {/* Variants */}
+                {/* Variants */}
 
         <div className="space-y-4">
 
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
 
             <h3 className="text-xl font-semibold">
               Variants
@@ -358,7 +412,7 @@ export default function ProductForm({
             <button
               type="button"
               onClick={addVariant}
-              className="rounded-lg bg-[#A88442] px-4 py-2 text-white"
+              className="rounded-lg bg-[#A88442] px-4 py-2 text-white transition hover:opacity-90"
             >
               + Add Variant
             </button>
@@ -373,6 +427,7 @@ export default function ProductForm({
             >
 
               <input
+                type="text"
                 placeholder="50ml"
                 value={variant.volume}
                 onChange={(e) =>
@@ -417,7 +472,7 @@ export default function ProductForm({
                 type="button"
                 onClick={() => removeVariant(index)}
                 disabled={variants.length === 1}
-                className="rounded-xl bg-red-500 text-white disabled:opacity-50"
+                className="rounded-xl bg-red-500 px-4 py-3 text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Delete
               </button>
@@ -442,8 +497,7 @@ export default function ProductForm({
           />
 
         </div>
-
-        {/* Homepage */}
+                {/* Homepage */}
 
         <div className="grid grid-cols-3 gap-4">
 
