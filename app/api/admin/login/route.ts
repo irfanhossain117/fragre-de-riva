@@ -54,14 +54,13 @@ export async function POST(req: Request) {
       success: true,
     });
 
-    response.cookies.set("admin_token", token, {
+response.cookies.set("admin_token", token, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
+  secure: false, // IP / HTTP environment-er jonno false thakbe
+  sameSite: "lax",
   path: "/",
   maxAge: 60 * 60 * 24 * 7,
 });
-
     return response;
   } catch (error) {
     console.error("Login error:", error);
