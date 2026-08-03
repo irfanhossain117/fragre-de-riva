@@ -1,51 +1,29 @@
-import mongoose, { Mongoose } from "mongoose";
+import fs from "fs/promises";
+import path from "path";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+// Upload Directory Path
+export const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "products");
 
-if (!process.env.MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI inside .env.local");
-}
-
-declare global {
-  var mongoose:
-    | {
-        conn: Mongoose | null;
-        promise: Promise<Mongoose> | null;
-      }
-    | undefined;
-}
-
-const cached = global.mongoose ?? {
-  conn: null,
-  promise: null,
-};
-
-global.mongoose = cached;
-
-export async function connectDB(): Promise<Mongoose> {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(MONGODB_URI, {
-        dbName: "perfume_db",
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-      })
-      .catch((err) => {
-        cached.promise = null; // Connection fail korle promise reset hobe jate porer call-e abar retry kore
-        throw err;
-      });
-  }
-
+// Ensure Upload Directory Exists
+export async function ensureUploadDir() {
   try {
-    cached.conn = await cached.promise;
-  } catch (error) {
-    cached.promise = null;
-    throw error;
+    await fs.access(UPLOAD_DIR);
+  } catch {
+    await fs.mkdir(UPLOAD_DIR, { recursive: true });
   }
+}
 
-  return cached.conn;
+// Helper to save single file
+export async function saveUploadedFile(file: File): Promise<string> {
+  await ensureUploadDir();
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  const ext = path.extname(file.name) || ".jpg";
+  const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+  const filePath = path.join(UPLOAD_DIR, filename);
+
+  await fs.writeFile(filePath, buffer);
+  return `/uploads/products/${filename}`;
 }
