@@ -10,12 +10,12 @@ import CouponBox from "./CouponBox";
 
 type Props = {
   open: boolean;
-  onCloseAction: () => void;
+  onClose: () => void; // পরিবর্তন করা হলো
 };
 
 export default function CartDrawer({
   open,
-  onCloseAction,
+  onClose, // পরিবর্তন করা হলো
 }: Props) {
   const {
     cart,
@@ -48,7 +48,7 @@ export default function CartDrawer({
     <>
       {/* Overlay */}
       <div
-        onClick={onCloseAction}
+        onClick={onClose}
         className={`fixed inset-0 bg-black/40 z-[90] transition-all duration-300 ${
           open
             ? "opacity-100 visible"
@@ -77,7 +77,7 @@ export default function CartDrawer({
           </div>
 
           <button
-            onClick={onCloseAction}
+            onClick={onClose}
             className="text-3xl text-gray-500 hover:text-black transition"
           >
             ×
@@ -213,7 +213,7 @@ export default function CartDrawer({
 
           <Link
             href="/checkout"
-            onClick={onCloseAction}
+            onClick={onClose}
             className={`block w-full text-center py-4 rounded-full font-semibold transition ${
               cart.length === 0
                 ? "bg-gray-300 text-gray-500 pointer-events-none"

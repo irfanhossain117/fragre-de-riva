@@ -89,32 +89,29 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto h-20 px-5 lg:px-8 flex items-center justify-between">
 
           {/* Logo */}
-
           <Link
-  href="/"
-  className="absolute left-1/2 -translate-x-1/2 md:absolute md:left-1/2 md:-translate-x-1/2 font-serif text-[#A88442] tracking-[0.15em] text-xl md:text-3xl whitespace-nowrap"
->
-  FRAGRÉ DE RIVA
-</Link>
+            href="/"
+            className="absolute left-1/2 -translate-x-1/2 md:absolute md:left-1/2 md:-translate-x-1/2 font-serif text-[#A88442] tracking-[0.15em] text-xl md:text-3xl whitespace-nowrap"
+          >
+            FRAGRÉ DE RIVA
+          </Link>
 
           {/* Desktop Menu */}
-
           <div className="hidden md:flex items-center gap-8">
             {navLink("/", "Home")}
             {navLink("/shop", "Shop")}
             {navLink("/wishlist", "Wishlist")}
             {navLink("/story", "Story")}
 
-<Link
-  href="/#footer"
-  className="text-[#2B241A] hover:text-[#A88442] transition"
->
-  Contact
-</Link>
+            <Link
+              href="/#footer"
+              className="text-[#2B241A] hover:text-[#A88442] transition"
+            >
+              Contact
+            </Link>
           </div>
 
           {/* Desktop Right */}
-
           <div className="hidden md:flex items-center gap-3">
             {/* Search */}
             <button
@@ -181,9 +178,8 @@ export default function Navbar() {
           }`}
         >
           <div className="mx-3 mb-3 rounded-3xl border border-[#ECE4D8] bg-white/90 backdrop-blur-xl shadow-2xl">
-
             <div className="flex flex-col gap-2 p-4">
-                            <Link
+              <Link
                 href="/"
                 onClick={() => setMenuOpen(false)}
                 className={`rounded-2xl px-4 py-4 transition ${
@@ -247,11 +243,9 @@ export default function Navbar() {
               >
                 WhatsApp
               </a>
-
             </div>
           </div>
         </div>
-
       </nav>
 
       <SearchModal
@@ -265,13 +259,10 @@ export default function Navbar() {
       />
 
       {/* Mobile Bottom Navigation */}
-
       <div className="fixed bottom-0 left-0 right-0 z-50 px-3 pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
-
         <div className="rounded-3xl border border-[#E7DDCC] bg-[#F8F4EE]/95 backdrop-blur-xl shadow-2xl">
-
           <div className="grid grid-cols-5">
-                        {/* Home */}
+            {/* Home */}
             <Link
               href="/"
               className={`flex flex-col items-center justify-center py-3 transition ${
@@ -352,7 +343,7 @@ export default function Navbar() {
                 Menu
               </span>
             </button>
-                      </div>
+          </div>
         </div>
       </div>
     </>
