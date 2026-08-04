@@ -10,12 +10,12 @@ import CouponBox from "./CouponBox";
 
 type Props = {
   open: boolean;
-  onClose: () => void; // পরিবর্তন করা হলো
+  onClose: () => void;
 };
 
 export default function CartDrawer({
   open,
-  onClose, // পরিবর্তন করা হলো
+  onClose,
 }: Props) {
   const {
     cart,

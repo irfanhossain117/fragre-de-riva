@@ -9,13 +9,14 @@ import { useCoupon } from "../context/CouponContext";
 
 import CouponBox from "../components/CouponBox";
 
-// CartItem-এর লোকাল ইন্টারফেস যাতে TS Error না দেয়
+// CartItem-এর লোকাল ইন্টারফেস যাতে TS Error না দেয়
 interface ExtendedCartItem {
   id: string | number;
   name: string;
   price: number;
   quantity: number;
   volume?: string;
+  size?: string;
   image?: string;
 }
 
@@ -51,7 +52,8 @@ export default function CheckoutPage() {
   const whatsappMessage = useMemo(() => {
     const itemsText = (cart as ExtendedCartItem[])
       .map((item) => {
-        const itemVolume = item.volume ? ` (${item.volume})` : "";
+        const itemVariant = item.volume || item.size;
+        const itemVolume = itemVariant ? ` (${itemVariant})` : "";
         return `• ${item.name}${itemVolume}
 Qty: ${item.quantity}
 Price: ৳${item.price}
@@ -298,26 +300,29 @@ ${coupon ? coupon.code : "None"}
               </h2>
 
               <div className="space-y-4 max-h-[360px] overflow-y-auto pr-2">
-                {(cart as ExtendedCartItem[]).map((item, index) => (
-                  <div
-                    key={item.id ? `${item.id}-${index}` : index}
-                    className="flex items-center justify-between border-b border-[#EFE3D0] pb-4"
-                  >
-                    <div>
-                      <h3 className="font-semibold text-[#2B241A]">
-                        {item.name}
-                      </h3>
+                {(cart as ExtendedCartItem[]).map((item, index) => {
+                  const itemVariant = item.volume || item.size;
+                  return (
+                    <div
+                      key={item.id ? `${item.id}-${index}` : index}
+                      className="flex items-center justify-between border-b border-[#EFE3D0] pb-4"
+                    >
+                      <div>
+                        <h3 className="font-semibold text-[#2B241A]">
+                          {item.name}
+                        </h3>
 
-                      <p className="text-sm text-gray-500">
-                        {item.volume ? `Size: ${item.volume} | ` : ""}Qty: {item.quantity}
+                        <p className="text-sm text-gray-500">
+                          {itemVariant ? `Size: ${itemVariant} | ` : ""}Qty: {item.quantity}
+                        </p>
+                      </div>
+
+                      <p className="font-semibold text-[#A88442]">
+                        ৳{item.price * item.quantity}
                       </p>
                     </div>
-
-                    <p className="font-semibold text-[#A88442]">
-                      ৳{item.price * item.quantity}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="space-y-3 mt-8 pt-6 border-t border-[#E7DDCC]">

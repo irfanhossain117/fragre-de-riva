@@ -20,14 +20,14 @@ type CartContextType = {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
-  cartUpdated: boolean; // টাইপ এরর ফিক্স করার জন্য এখানে যোগ করা হলো
+  cartUpdated: boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [cartUpdated, setCartUpdated] = useState<boolean>(false); // স্টেট যোগ করা হলো
+  const [cartUpdated, setCartUpdated] = useState<boolean>(false);
 
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
@@ -42,7 +42,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
-    setCartUpdated((prev) => !prev); // কার্ট পরিবর্তন হলেই এটি ট্রিগার হবে
+    setCartUpdated((prev) => !prev);
   }, [cart]);
 
   const addToCart = (item: CartItem, quantity = 1) => {
@@ -65,13 +65,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart((prevCart) => prevCart.filter((item) => !(item.id === id && item.size === size)));
   };
 
-  const increaseQuantity = (id: number, size: string) => {
-    setCart((prevCart) =>
-      prevCardMap(prevCart, id, size, 1)
-    );
-  };
-
-  function prevCardMap(prevCart: CartItem[], id: number, size: string, delta: number) {
+  const updateQuantityMap = (prevCart: CartItem[], id: number, size: string, delta: number) => {
     return prevCart.map((item) => {
       if (item.id === id && item.size === size) {
         const newQty = (item.quantity || 1) + delta;
@@ -79,7 +73,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return item;
     });
-  }
+  };
+
+  const increaseQuantity = (id: number, size: string) => {
+    setCart((prevCart) => updateQuantityMap(prevCart, id, size, 1));
+  };
 
   const decreaseQuantity = (id: number, size: string) => {
     setCart((prevCart) => {
@@ -111,7 +109,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
-        cartUpdated, // প্রোভাইডার ভ্যালুতে পাস করা হলো
+        cartUpdated,
       }}
     >
       {children}

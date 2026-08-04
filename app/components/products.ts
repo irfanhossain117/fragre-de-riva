@@ -66,7 +66,7 @@ export const products = [
 
     images: [
       "/products/gugu.jpeg",
-      "/products/gaga.jpeg",
+    
       "/products/lulu.jpeg",
     ],
 
@@ -77,7 +77,7 @@ export const products = [
     baseNotes: "Amber, Musk",
 
     volume: "50ml",
-    category: "Female Collection",
+    category: "LEGEND Collection",
 
     rating: 4.9,
     reviews: 127,
