@@ -12,13 +12,18 @@ export default function RelatedProducts({
   currentId,
   category,
 }: Props) {
-  const related = products
-    .filter(
-      (p) =>
-        p.category === category &&
-        p.id !== currentId
-    )
-    .slice(0, 4);
+  // ১. প্রথমে বর্তমান প্রোডাক্ট বাদ দিয়ে একই ক্যাটাগরির প্রোডাক্টগুলো ফিল্টার করা
+  const sameCategoryProducts = products.filter(
+    (p) => p.category === category && p.id !== currentId
+  );
+
+  // ২. যদি একই ক্যাটাগরিতে পর্যাপ্ত প্রোডাক্ট না থাকে, তবে অন্য ক্যাটাগরি থেকেও প্রোডাক্ট নিয়ে আসা (যাতে লিস্ট খালি না থাকে)
+  const otherCategoryProducts = products.filter(
+    (p) => p.category !== category && p.id !== currentId
+  );
+
+  // ৩. দুটি মিলিয়ে মোট সর্বোচ্চ ৪টি প্রোডাক্ট রিলেটেড সেকশনের জন্য তৈরি করা
+  const related = [...sameCategoryProducts, ...otherCategoryProducts].slice(0, 4);
 
   if (related.length === 0) return null;
 

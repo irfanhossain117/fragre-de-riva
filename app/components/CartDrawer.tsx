@@ -10,12 +10,12 @@ import CouponBox from "./CouponBox";
 
 type Props = {
   open: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
 };
 
 export default function CartDrawer({
   open,
-  onClose,
+  onCloseAction,
 }: Props) {
   const {
     cart,
@@ -48,7 +48,7 @@ export default function CartDrawer({
     <>
       {/* Overlay */}
       <div
-        onClick={onClose}
+        onClick={onCloseAction}
         className={`fixed inset-0 bg-black/40 z-[90] transition-all duration-300 ${
           open
             ? "opacity-100 visible"
@@ -77,7 +77,7 @@ export default function CartDrawer({
           </div>
 
           <button
-            onClick={onClose}
+            onClick={onCloseAction}
             className="text-3xl text-gray-500 hover:text-black transition"
           >
             ×
@@ -104,10 +104,10 @@ export default function CartDrawer({
             <div className="p-6 space-y-6">
               {cart.map((item) => (
                 <div
-                  key={item.id}
-                  className="flex gap-4 border-b border-gray-200 pb-6"
+                  key={`${item.id}-${item.size}`}
+                  className="flex gap-4 border-b border-gray-200 pb-6 relative"
                 >
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-[#F8F4EE]">
+                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-[#F8F4EE] flex-shrink-0">
                     <Image
                       src={item.image}
                       alt={item.name}
@@ -121,6 +121,12 @@ export default function CartDrawer({
                       {item.name}
                     </h3>
 
+                    {item.size && (
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        Volume: <span className="font-medium text-[#A88442]">{item.size}</span>
+                      </p>
+                    )}
+
                     <p className="text-[#A88442] font-bold mt-1">
                       ৳{item.price}
                     </p>
@@ -128,9 +134,9 @@ export default function CartDrawer({
                     <div className="flex items-center gap-3 mt-4">
                       <button
                         onClick={() =>
-                          decreaseQuantity(item.id)
+                          decreaseQuantity(item.id, item.size)
                         }
-                        className="w-8 h-8 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+                        className="w-8 h-8 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition flex items-center justify-center"
                       >
                         −
                       </button>
@@ -141,9 +147,9 @@ export default function CartDrawer({
 
                       <button
                         onClick={() =>
-                          increaseQuantity(item.id)
+                          increaseQuantity(item.id, item.size)
                         }
-                        className="w-8 h-8 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition"
+                        className="w-8 h-8 rounded-full border border-[#A88442] text-[#A88442] hover:bg-[#A88442] hover:text-white transition flex items-center justify-center"
                       >
                         +
                       </button>
@@ -152,7 +158,7 @@ export default function CartDrawer({
 
                   <button
                     onClick={() =>
-                      removeFromCart(item.id)
+                      removeFromCart(item.id, item.size)
                     }
                     className="text-red-500 hover:text-red-700 text-xl"
                   >
@@ -207,7 +213,7 @@ export default function CartDrawer({
 
           <Link
             href="/checkout"
-            onClick={onClose}
+            onClick={onCloseAction}
             className={`block w-full text-center py-4 rounded-full font-semibold transition ${
               cart.length === 0
                 ? "bg-gray-300 text-gray-500 pointer-events-none"

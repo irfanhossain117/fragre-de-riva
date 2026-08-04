@@ -1,4 +1,4 @@
- export const products = [
+export const products = [
   {
     id: 1,
     slug: "Rahi-is-Legend",
@@ -10,7 +10,14 @@
     featured: true,
     bestSeller: true,
 
-    price: 999999999999999,
+    price: 3500, // ডিফল্ট প্রাইস
+
+    // 👇 এখান থেকে ৩০ মিলি, ১০ মিলি এবং ৫০ মিলির দাম এবং স্টক ঠিক করতে পারবেন
+    variants: [
+      { volume: "50ml", price: 3500, stock: 8 },
+      { volume: "30ml", price: 2400, stock: 5 },
+      { volume: "10ml", price: 990, stock: 12 },
+    ],
 
     image: "/products/Screenshot 2026-07-18 225748.png",
 
@@ -46,7 +53,14 @@
     featured: true,
     bestSeller: false,
 
-    price: 999999999,
+    price: 3200,
+
+    // 👇 এখান থেকে ৩০ মিলি, ১০ মিলি এবং ৫০ মিলির দাম এবং স্টক ঠিক করতে পারবেন
+    variants: [
+      { volume: "50ml", price: 3200, stock: 8 },
+      { volume: "30ml", price: 2100, stock: 5 },
+      { volume: "10ml", price: 890, stock: 10 },
+    ],
 
     image: "/products/gugu.jpeg",
 
@@ -82,6 +96,13 @@
     bestSeller: true,
 
     price: 3490,
+
+    // 👇 এখান থেকে ৩০ মিলি, ১০ মিলি এবং ৫০ মিলির দাম এবং স্টক ঠিক করতে পারবেন
+    variants: [
+      { volume: "50ml", price: 3490, stock: 8 },
+      { volume: "30ml", price: 2300, stock: 6 },
+      { volume: "10ml", price: 950, stock: 15 },
+    ],
 
     image:
       "https://images.unsplash.com/photo-1615634262417-2b0e3f6f0d08?q=80&w=1200",
@@ -120,6 +141,13 @@
 
     price: 2790,
 
+    // 👇 এখান থেকে ৩০ মিলি, ১০ মিলি এবং ৫০ মিলির দাম এবং স্টক ঠিক করতে পারবেন
+    variants: [
+      { volume: "50ml", price: 2790, stock: 8 },
+      { volume: "30ml", price: 1890, stock: 4 },
+      { volume: "10ml", price: 790, stock: 10 },
+    ],
+
     image:
       "https://images.unsplash.com/photo-1588405748880-12d1d2a59db9?q=80&w=1200",
 
@@ -156,6 +184,13 @@
     bestSeller: true,
 
     price: 3990,
+
+    // 👇 এখান থেকে ৩০ মিলি, ১০ মিলি এবং ৫০ মিলির দাম এবং স্টক ঠিক করতে পারবেন
+    variants: [
+      { volume: "50ml", price: 3990, stock: 8 },
+      { volume: "30ml", price: 2690, stock: 5 },
+      { volume: "10ml", price: 1100, stock: 15 },
+    ],
 
     image:
       "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1200",

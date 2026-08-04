@@ -30,7 +30,7 @@ type Product = {
   rating: number;
   reviews: number;
   stock: number;
-  variants?: Variant[]; // ভ্যারিয়েন্ট অপশনাল সাপোর্ট
+  variants?: Variant[];
 };
 
 type Props = {
@@ -41,7 +41,6 @@ export default function ProductInfo({ product }: Props) {
   const { addToCart } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
 
-  // ১. বাই-ডিফল্ট ভ্যারিয়েন্ট লিস্ট (যদি ডাটাবেজে না থাকে তবে ডিফল্ট ৩টি সাইজ তৈরি করে নেবে)
   const variants: Variant[] = product.variants && product.variants.length > 0 
     ? product.variants 
     : [
@@ -50,9 +49,7 @@ export default function ProductInfo({ product }: Props) {
         { volume: "10ml", price: Math.round(product.price * 0.35), stock: 8 },
       ];
 
-  // ২. সিলেক্টেড ভ্যারিয়েন্ট স্টেট (বাই-ডিফল্ট ১ম ভ্যারিয়েন্ট)
   const [selectedVariant, setSelectedVariant] = useState<Variant>(variants[0]);
-
   const [quantity, setQuantity] = useState(1);
   const [showToast, setShowToast] = useState(false);
   const pathname = usePathname();
@@ -62,9 +59,10 @@ export default function ProductInfo({ product }: Props) {
     addToCart(
       {
         id: product.id,
-        name: `${product.name} (${selectedVariant.volume})`,
+        name: product.name,
         price: selectedVariant.price,
         image: product.image,
+        size: selectedVariant.volume,
       },
       quantity
     );
@@ -107,7 +105,6 @@ export default function ProductInfo({ product }: Props) {
     }
   }
 
-  // সিলেক্টেড দাম এবং সাইজ অনুযায়ী হোয়াটসঅ্যাপ মেসেজ আপডেট হবে
   const whatsappUrl = `https://wa.me/8801511856101?text=${encodeURIComponent(
     `Hello Fragré de Riva,\n\nI would like to order:\n\nProduct: ${product.name}\nVolume: ${selectedVariant.volume}\nQuantity: ${quantity}\nPrice: ৳${selectedVariant.price}\n\nTotal: ৳${selectedVariant.price * quantity}`
   )}`;
@@ -124,7 +121,6 @@ export default function ProductInfo({ product }: Props) {
         {product.name}
       </h1>
 
-      {/* 💰 DYNAMIC PRICE (ক্লিক করা ভ্যারিয়েন্ট অনুযায়ী দাম দেখাবে) */}
       <p className="text-3xl font-bold text-[#A88442] mb-6">
         ৳{selectedVariant.price}
       </p>
@@ -162,7 +158,7 @@ export default function ProductInfo({ product }: Props) {
         </span>
       </div>
 
-      {/* 🧪 CLICKABLE VOLUME BUTTONS */}
+      {/* Volume Buttons */}
       <div className="mb-6">
         <p className="text-gray-700 mb-3 font-semibold">
           Volume: <span className="text-[#A88442]">{selectedVariant.volume}</span>

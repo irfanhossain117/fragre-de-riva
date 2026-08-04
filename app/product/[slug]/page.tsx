@@ -4,6 +4,7 @@ import { products } from "../../components/products";
 import ProductGallery from "../../components/ProductGallery";
 import ProductInfo from "../../components/ProductInfo";
 import RelatedProducts from "../../components/RelatedProducts";
+import ProductReviews from "../../components/ProductReviews"; // পাথ ঠিকমতো মিলিয়ে নেবেন
 
 type Props = {
   params: Promise<{
@@ -94,12 +95,12 @@ export default async function ProductPage({
 
         </div>
       </section>
-      <RelatedProducts
-  currentId={product.id}
-  category={product.category}
-/>
-      
 
+      <RelatedProducts
+        currentId={product.id}
+        category={product.category}
+      />
+      
       <section className="bg-white py-24">
         <div className="max-w-5xl mx-auto px-6 text-center">
 
@@ -117,6 +118,10 @@ export default async function ProductPage({
 
         </div>
       </section>
+
+      {/* কাস্টমার রিভিউ সেকশন */}
+      <ProductReviews productId={Number(product.id)} />
+
     </main>
   );
-} 
+}
