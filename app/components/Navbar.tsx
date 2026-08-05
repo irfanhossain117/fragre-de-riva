@@ -86,12 +86,12 @@ export default function Navbar() {
             : "bg-[#F8F4EE]/95 border-b border-[#ECE4D8]"
         }`}
       >
-        <div className="max-w-7xl mx-auto h-20 px-5 lg:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto h-20 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
 
           {/* Logo */}
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 md:absolute md:left-1/2 md:-translate-x-1/2 font-serif text-[#A88442] tracking-[0.15em] text-xl md:text-3xl whitespace-nowrap"
+            className="absolute left-1/2 -translate-x-1/2 font-serif text-[#A88442] tracking-[0.15em] text-lg sm:text-2xl md:text-3xl whitespace-nowrap"
           >
             FRAGRÉ DE RIVA
           </Link>
@@ -169,7 +169,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Dropdown */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-500 ${
             menuOpen
@@ -177,14 +177,14 @@ export default function Navbar() {
               : "max-h-0 opacity-0"
           }`}
         >
-          <div className="mx-3 mb-3 rounded-3xl border border-[#ECE4D8] bg-white/90 backdrop-blur-xl shadow-2xl">
-            <div className="flex flex-col gap-2 p-4">
+          <div className="mx-3 mb-3 rounded-3xl border border-[#ECE4D8] bg-white/95 backdrop-blur-xl shadow-2xl">
+            <div className="flex flex-col gap-1 p-3">
               <Link
                 href="/"
                 onClick={() => setMenuOpen(false)}
-                className={`rounded-2xl px-4 py-4 transition ${
+                className={`rounded-2xl px-4 py-3 transition text-sm ${
                   pathname === "/"
-                    ? "bg-[#A88442]/10 text-[#A88442]"
+                    ? "bg-[#A88442]/10 text-[#A88442] font-semibold"
                     : "text-[#2B241A] hover:bg-[#F8F4EE]"
                 }`}
               >
@@ -194,9 +194,9 @@ export default function Navbar() {
               <Link
                 href="/shop"
                 onClick={() => setMenuOpen(false)}
-                className={`rounded-2xl px-4 py-4 transition ${
+                className={`rounded-2xl px-4 py-3 transition text-sm ${
                   pathname === "/shop"
-                    ? "bg-[#A88442]/10 text-[#A88442]"
+                    ? "bg-[#A88442]/10 text-[#A88442] font-semibold"
                     : "text-[#2B241A] hover:bg-[#F8F4EE]"
                 }`}
               >
@@ -206,9 +206,9 @@ export default function Navbar() {
               <Link
                 href="/wishlist"
                 onClick={() => setMenuOpen(false)}
-                className={`rounded-2xl px-4 py-4 transition ${
+                className={`rounded-2xl px-4 py-3 transition text-sm ${
                   pathname === "/wishlist"
-                    ? "bg-[#A88442]/10 text-[#A88442]"
+                    ? "bg-[#A88442]/10 text-[#A88442] font-semibold"
                     : "text-[#2B241A] hover:bg-[#F8F4EE]"
                 }`}
               >
@@ -218,9 +218,9 @@ export default function Navbar() {
               <Link
                 href="/story"
                 onClick={() => setMenuOpen(false)}
-                className={`rounded-2xl px-4 py-4 transition ${
+                className={`rounded-2xl px-4 py-3 transition text-sm ${
                   pathname === "/story"
-                    ? "bg-[#A88442]/10 text-[#A88442]"
+                    ? "bg-[#A88442]/10 text-[#A88442] font-semibold"
                     : "text-[#2B241A] hover:bg-[#F8F4EE]"
                 }`}
               >
@@ -230,7 +230,7 @@ export default function Navbar() {
               <Link
                 href="/#footer"
                 onClick={() => setMenuOpen(false)}
-                className="rounded-2xl px-4 py-4 text-[#2B241A] hover:bg-[#F8F4EE] hover:text-[#A88442] transition"
+                className="rounded-2xl px-4 py-3 text-sm text-[#2B241A] hover:bg-[#F8F4EE] hover:text-[#A88442] transition"
               >
                 Contact
               </Link>
@@ -239,7 +239,7 @@ export default function Navbar() {
                 href="https://wa.me/8801511856101"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 rounded-2xl bg-[#A88442] py-4 text-center font-medium text-white hover:opacity-90 transition"
+                className="mt-2 rounded-2xl bg-[#A88442] py-3 text-center text-sm font-medium text-white hover:opacity-90 transition"
               >
                 WhatsApp
               </a>
@@ -258,50 +258,50 @@ export default function Navbar() {
         onClose={() => setCartOpen(false)}
       />
 
-      {/* Mobile Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 px-3 pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
-        <div className="rounded-3xl border border-[#E7DDCC] bg-[#F8F4EE]/95 backdrop-blur-xl shadow-2xl">
-          <div className="grid grid-cols-5">
+      {/* Mobile Bottom Navigation with Extra Padding to prevent overlap */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 px-3 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden pointer-events-none">
+        <div className="rounded-3xl border border-[#E7DDCC] bg-[#F8F4EE]/95 backdrop-blur-xl shadow-2xl pointer-events-auto">
+          <div className="grid grid-cols-5 py-1">
             {/* Home */}
             <Link
               href="/"
-              className={`flex flex-col items-center justify-center py-3 transition ${
+              className={`flex flex-col items-center justify-center py-2 transition ${
                 pathname === "/"
                   ? "text-[#A88442]"
                   : "text-gray-500 hover:text-[#A88442]"
               }`}
             >
-              <Home size={20} />
-              <span className="mt-1 text-[11px]">Home</span>
+              <Home size={19} />
+              <span className="mt-0.5 text-[10px] font-medium">Home</span>
             </Link>
 
             {/* Search */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex flex-col items-center justify-center py-3 text-gray-500 hover:text-[#A88442] transition"
+              className="flex flex-col items-center justify-center py-2 text-gray-500 hover:text-[#A88442] transition"
             >
-              <Search size={20} />
-              <span className="mt-1 text-[11px]">Search</span>
+              <Search size={19} />
+              <span className="mt-0.5 text-[10px] font-medium">Search</span>
             </button>
 
             {/* Wishlist */}
             <Link
               href="/wishlist"
-              className={`relative flex flex-col items-center justify-center py-3 transition ${
+              className={`relative flex flex-col items-center justify-center py-2 transition ${
                 pathname === "/wishlist"
                   ? "text-[#A88442]"
                   : "text-gray-500 hover:text-[#A88442]"
               }`}
             >
-              <Heart size={20} />
+              <Heart size={19} />
 
               {totalWishlist > 0 && (
-                <span className="absolute top-2 right-4 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                <span className="absolute top-1 right-3.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">
                   {totalWishlist}
                 </span>
               )}
 
-              <span className="mt-1 text-[11px]">
+              <span className="mt-0.5 text-[10px] font-medium">
                 Wishlist
               </span>
             </Link>
@@ -309,17 +309,17 @@ export default function Navbar() {
             {/* Cart */}
             <button
               onClick={() => setCartOpen(true)}
-              className="relative flex flex-col items-center justify-center py-3 text-gray-500 hover:text-[#A88442] transition"
+              className="relative flex flex-col items-center justify-center py-2 text-gray-500 hover:text-[#A88442] transition"
             >
-              <ShoppingBag size={20} />
+              <ShoppingBag size={19} />
 
               {totalItems > 0 && (
-                <span className="absolute top-2 right-4 flex h-5 w-5 items-center justify-center rounded-full bg-[#A88442] text-[10px] font-bold text-white">
+                <span className="absolute top-1 right-3.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#A88442] text-[9px] font-bold text-white">
                   {totalItems}
                 </span>
               )}
 
-              <span className="mt-1 text-[11px]">
+              <span className="mt-0.5 text-[10px] font-medium">
                 Cart
               </span>
             </button>
@@ -327,19 +327,19 @@ export default function Navbar() {
             {/* Menu */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className={`flex flex-col items-center justify-center py-3 transition ${
+              className={`flex flex-col items-center justify-center py-2 transition ${
                 menuOpen
                   ? "text-[#A88442]"
                   : "text-gray-500 hover:text-[#A88442]"
               }`}
             >
               {menuOpen ? (
-                <X size={20} />
+                <X size={19} />
               ) : (
-                <Menu size={20} />
+                <Menu size={19} />
               )}
 
-              <span className="mt-1 text-[11px]">
+              <span className="mt-0.5 text-[10px] font-medium">
                 Menu
               </span>
             </button>
