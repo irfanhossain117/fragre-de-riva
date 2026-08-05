@@ -150,7 +150,7 @@ ${coupon ? coupon.code : "None"}
   }
 
   return (
-    <main className="min-h-screen bg-[#F8F4EE] pt-28 sm:pt-36 pb-20">
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#F8F4EE] pt-28 sm:pt-36 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10 sm:mb-16">
           <p className="uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[#A88442] mb-2 sm:mb-4 text-xs sm:text-sm">
@@ -184,7 +184,7 @@ ${coupon ? coupon.code : "None"}
         ) : (
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-10">
             {/* Customer Details Form */}
-            <section className="bg-white rounded-3xl shadow-lg p-5 sm:p-8 border border-[#E7DDCC]">
+            <section className="bg-white rounded-3xl shadow-lg p-5 sm:p-8 border border-[#E7DDCC] min-w-0">
               <h2 className="text-2xl sm:text-3xl font-serif text-[#A88442] mb-6 sm:mb-8">
                 Customer Details
               </h2>
@@ -290,14 +290,14 @@ ${coupon ? coupon.code : "None"}
                   </div>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 min-w-0">
                   <CouponBox />
                 </div>
               </div>
             </section>
 
             {/* Order Summary */}
-            <aside className="bg-white rounded-3xl shadow-lg p-5 sm:p-8 border border-[#E7DDCC] h-fit">
+            <aside className="bg-white rounded-3xl shadow-lg p-5 sm:p-8 border border-[#E7DDCC] h-fit min-w-0">
               <h2 className="text-2xl sm:text-3xl font-serif text-[#A88442] mb-6 sm:mb-8">
                 Order Summary
               </h2>
@@ -352,8 +352,8 @@ ${coupon ? coupon.code : "None"}
                   </div>
                 )}
 
-                <div className="border-t pt-4 flex justify-between text-xl sm:text-2xl font-bold">
-                  <span>Total</span>
+                <div className="border-t pt-4 flex justify-between text-xl sm:text-2xl font-bold text-[#A88442]">
+                  <span>Total </span>
 
                   <span className="text-[#A88442]">৳{grandTotal}</span>
                 </div>

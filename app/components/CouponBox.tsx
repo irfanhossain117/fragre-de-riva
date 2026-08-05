@@ -30,18 +30,18 @@ export default function CouponBox() {
   }
 
   return (
-    <div className="rounded-2xl border border-[#E7DDCC] bg-[#FAF7F2] p-5">
+    <div className="rounded-2xl border border-[#E7DDCC] bg-[#FAF7F2] p-4 sm:p-5">
 
-      <h3 className="text-lg font-semibold text-[#A88442] mb-4">
+      <h3 className="text-base sm:text-lg font-semibold text-[#A88442] mb-3 sm:mb-4">
         Coupon Code
       </h3>
 
       {coupon ? (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
 
-          <div>
+          <div className="min-w-0">
 
-            <p className="font-semibold text-[#2B241A]">
+            <p className="font-semibold text-[#2B241A] truncate">
               {coupon.code}
             </p>
 
@@ -55,7 +55,7 @@ export default function CouponBox() {
 
           <button
             onClick={removeCoupon}
-            className="px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
+            className="shrink-0 px-3 sm:px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition text-sm sm:text-base"
           >
             Remove
           </button>
@@ -63,22 +63,22 @@ export default function CouponBox() {
         </div>
       ) : (
         <>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
 
             <input
-  type="text"
-  value={code}
-  onChange={(e) => {
-    setCode(e.target.value.toUpperCase());
-    setMessage("");
-  }}
-  placeholder="Enter coupon..."
-  className="flex-1 rounded-full border border-[#D6C7AB] bg-white px-5 py-3 text-[#2B241A] placeholder:text-gray-400 caret-[#A88442] outline-none focus:border-[#A88442]"
-/>
+              type="text"
+              value={code}
+              onChange={(e) => {
+                setCode(e.target.value.toUpperCase());
+                setMessage("");
+              }}
+              placeholder="Enter coupon..."
+              className="min-w-0 flex-1 rounded-full border border-[#D6C7AB] bg-white px-4 sm:px-5 py-2.5 sm:py-3 text-sm sm:text-base text-[#2B241A] placeholder:text-gray-400 caret-[#A88442] outline-none focus:border-[#A88442]"
+            />
 
             <button
               onClick={handleApply}
-              className="px-6 rounded-full bg-[#A88442] text-white hover:opacity-90 transition"
+              className="shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-[#A88442] text-white text-sm sm:text-base hover:opacity-90 transition"
             >
               Apply
             </button>

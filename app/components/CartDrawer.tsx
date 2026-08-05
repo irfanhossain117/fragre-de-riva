@@ -58,7 +58,7 @@ export default function CartDrawer({
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white text-[#2B241A] z-[100] shadow-2xl transition-transform duration-300 flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] max-w-full overflow-x-hidden bg-white text-[#2B241A] z-[100] shadow-2xl transition-transform duration-300 flex flex-col ${
           open
             ? "translate-x-0"
             : "translate-x-full"
@@ -85,7 +85,7 @@ export default function CartDrawer({
         </div>
 
         {/* Items */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
           {cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center px-6">
               <div className="text-6xl sm:text-7xl mb-4">
@@ -174,7 +174,7 @@ export default function CartDrawer({
         <div className="border-t border-gray-200 p-4 sm:p-6 bg-white">
 
           {cart.length > 0 && (
-            <div className="mb-4 sm:mb-6">
+            <div className="mb-4 sm:mb-6 min-w-0">
               <CouponBox />
             </div>
           )}
