@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import Admin from "@/models/Admin";
+import { signToken } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -39,28 +39,24 @@ export async function POST(req: Request) {
       );
     }
 
-    const token = jwt.sign(
-      {
-        id: admin._id,
-        email: admin.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    // signToken এখন lib/auth.ts থেকে আসছে (jose ব্যবহার করে) — এবং async, তাই await লাগবে
+    const token = await signToken({
+      id: admin._id.toString(),
+      email: admin.email,
+    });
 
     const response = NextResponse.json({
       success: true,
     });
 
-response.cookies.set("admin_token", token, {
-  httpOnly: true,
-  secure: false, // IP / HTTP environment-er jonno false thakbe
-  sameSite: "lax",
-  path: "/",
-  maxAge: 60 * 60 * 24 * 7,
-});
+    response.cookies.set("admin_token", token, {
+      httpOnly: true,
+      secure: false, // IP / HTTP environment-er jonno false thakbe
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
     return response;
   } catch (error) {
     console.error("Login error:", error);
