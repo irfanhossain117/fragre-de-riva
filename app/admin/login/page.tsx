@@ -21,10 +21,8 @@ export default function AdminLoginPage() {
     setError("");
 
     try {
-      // API URL setup (Falls back to the tunnel backend URL)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.fragrederiva.shop";
-
-      const res = await fetch(`${apiUrl}/api/admin/login`, {
+      // Use relative path so it hits the current domain's API route directly
+      const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
