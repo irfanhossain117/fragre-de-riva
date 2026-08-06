@@ -21,13 +21,14 @@ export default function AdminLoginPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
+      // API URL setup (Falls back to the tunnel backend URL)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.fragrederiva.shop";
 
+      const res = await fetch(`${apiUrl}/api/admin/login`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           email,
           password,
@@ -57,9 +58,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f7f4ef] px-6">
-
       <div className="w-full max-w-md rounded-3xl bg-white shadow-2xl p-10">
-
         <h1 className="text-4xl font-serif text-center text-[#A88442]">
           Fragré de Riva
         </h1>
@@ -72,7 +71,6 @@ export default function AdminLoginPage() {
           onSubmit={handleLogin}
           className="space-y-5"
         >
-
           <input
             type="email"
             placeholder="Admin Email"
@@ -112,11 +110,8 @@ export default function AdminLoginPage() {
               ? "Signing In..."
               : "Login"}
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 }
