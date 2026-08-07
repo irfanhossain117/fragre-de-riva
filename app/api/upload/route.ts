@@ -1,21 +1,17 @@
 import { NextResponse } from "next/server";
-import { ensureUploadDir, UPLOAD_DIR } from "@/lib/upload";
-import fs from "fs/promises";
-import path from "path";
-import crypto from "crypto";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-const ALLOWED_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-];
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export async function POST(req: Request) {
   try {
-    await ensureUploadDir();
-
     const data = await req.formData();
     const file = data.get("file") as File | null;
 
@@ -40,22 +36,26 @@ export async function POST(req: Request) {
       );
     }
 
-    const extension = path.extname(file.name) || ".jpg";
-    const filename = crypto.randomUUID() + extension;
-
     const bytes = await file.arrayBuffer();
-    const filePath = path.join(UPLOAD_DIR, filename);
+    const buffer = Buffer.from(bytes);
 
-    await fs.writeFile(filePath, Buffer.from(bytes));
+    const uploadResult: any = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "fragre-de-riva/products" },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(buffer);
+    });
 
     return NextResponse.json({
       success: true,
-      url: `/uploads/products/${filename}`,
+      url: uploadResult.secure_url,
     });
   } catch (error: any) {
-    console.error("UPLOAD ERROR DETAILS:", error);
-
-    // ব্রাউজারে আসল এরর মেসেজ পাঠানোর জন্য যাতে সাথে সাথে ধরতে পারেন
+    console.error("CLOUDINARY UPLOAD ERROR:", error);
     return NextResponse.json(
       {
         success: false,
