@@ -1,36 +1,50 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import { products } from "./products";
+
+type Product = {
+  id: number;
+  slug: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+};
 
 type Props = {
   currentId: number;
   category: string;
 };
 
-export default function RelatedProducts({
-  currentId,
-  category,
-}: Props) {
-  // ১. প্রথমে বর্তমান প্রোডাক্ট বাদ দিয়ে একই ক্যাটাগরির প্রোডাক্টগুলো ফিল্টার করা
-  const sameCategoryProducts = products.filter(
-    (p) => p.category === category && p.id !== currentId
-  );
+export default function RelatedProducts({ currentId, category }: Props) {
+  const [related, setRelated] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // ২. যদি একই ক্যাটাগরিতে পর্যাপ্ত প্রোডাক্ট না থাকে, তবে অন্য ক্যাটাগরি থেকেও প্রোডাক্ট নিয়ে আসা (যাতে লিস্ট খালি না থাকে)
-  const otherCategoryProducts = products.filter(
-    (p) => p.category !== category && p.id !== currentId
-  );
+  useEffect(() => {
+    async function fetchRelatedProducts() {
+      try {
+        const res = await fetch(`/api/products?category=${encodeURIComponent(category)}&exclude=${currentId}`);
+        const data = await res.json();
+        
+        if (data.success && Array.isArray(data.data)) {
+          setRelated(data.data.slice(0, 4));
+        }
+      } catch (err) {
+        console.error("Failed to fetch related products", err);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  // ৩. দুটি মিলিয়ে মোট সর্বোচ্চ ৪টি প্রোডাক্ট রিলেটেড সেকশনের জন্য তৈরি করা
-  const related = [...sameCategoryProducts, ...otherCategoryProducts].slice(0, 4);
+    fetchRelatedProducts();
+  }, [currentId, category]);
 
-  if (related.length === 0) return null;
+  if (loading || related.length === 0) return null;
 
   return (
     <section className="py-24">
       <div className="max-w-7xl mx-auto px-6">
-
         <p className="uppercase tracking-[0.4em] text-[#A88442] mb-4 text-center">
           You May Also Like
         </p>
@@ -47,7 +61,6 @@ export default function RelatedProducts({
             />
           ))}
         </div>
-
       </div>
     </section>
   );

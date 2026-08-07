@@ -3,18 +3,36 @@ import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 import type { Variant, ProductInput } from "@/types/product";
 
-
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const products = await Product.find()
+    const { searchParams } = new URL(req.url);
+    const category = searchParams.get("category");
+    const excludeId = searchParams.get("exclude");
+
+    let query: any = {};
+
+    // যদি ক্যাটাগরি দেওয়া থাকে, কুয়েরিতে যুক্ত করুন
+    if (category) {
+      query.category = category;
+    }
+
+    // যদি কোনো আইডি এক্সক্লুড (বাদ) করতে বলা হয় (যেমন: Related Products এর জন্য)
+    if (excludeId) {
+      // MongoDB তে আপনার প্রডাক্টের আইডি _id (ObjectId) নাকি কাস্টম id (number/string) তার ওপর ভিত্তি করে কুয়েরি
+      query._id = { $ne: excludeId }; 
+    }
+
+    // ডাটাবেজ থেকে কুয়েরি অনুযায়ী প্রোডাক্ট ফেচ করা
+    const products = await Product.find(query)
       .sort({ createdAt: -1 })
       .lean();
 
     return NextResponse.json({
       success: true,
       products,
+      data: products, // RelatedProducts কম্পোনেন্টের সুবিধার জন্য data প্রপার্টিও রাখা হলো
     });
   } catch (error) {
     console.error("GET PRODUCTS ERROR:", error);

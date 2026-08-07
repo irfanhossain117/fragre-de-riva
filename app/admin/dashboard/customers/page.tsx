@@ -1,56 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Mail, Phone, ShoppingBag } from "lucide-react";
 
-// Mock Customer Data
-const mockCustomers = [
-  {
-    id: "cust_1",
-    name: "Tanvir Ahmed",
-    email: "tanvir.ahmed@example.com",
-    phone: "+880 1712-345678",
-    ordersCount: 5,
-    totalSpent: "৳12,500",
-    joinedDate: "12 Jan, 2026",
-    status: "Active",
-  },
-  {
-    id: "cust_2",
-    name: "Sumi Akter",
-    email: "sumi.akter@example.com",
-    phone: "+880 1819-876543",
-    ordersCount: 2,
-    totalSpent: "৳4,800",
-    joinedDate: "05 Feb, 2026",
-    status: "Active",
-  },
-  {
-    id: "cust_3",
-    name: "Rahim Chowdhury",
-    email: "rahim.c@example.com",
-    phone: "+880 1911-223344",
-    ordersCount: 8,
-    totalSpent: "৳28,900",
-    joinedDate: "20 Nov, 2025",
-    status: "Active",
-  },
-  {
-    id: "cust_4",
-    name: "Nusrat Jahan",
-    email: "nusrat.j@example.com",
-    phone: "+880 1610-556677",
-    ordersCount: 0,
-    totalSpent: "৳0",
-    joinedDate: "28 Jul, 2026",
-    status: "Inactive",
-  },
-];
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  ordersCount: number;
+  totalSpent: string;
+  joinedDate: string;
+  status: string;
+}
 
 export default function CustomersPage() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredCustomers = mockCustomers.filter(
+  useEffect(() => {
+    async function fetchCustomers() {
+      try {
+        const res = await fetch("/api/admin/customers");
+        const data = await res.json();
+        if (data.success) {
+          setCustomers(data.customers);
+        }
+      } catch (error) {
+        console.error("Failed to load customers:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCustomers();
+  }, []);
+
+  const filteredCustomers = customers.filter(
     (customer) =>
       customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -98,7 +85,13 @@ export default function CustomersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredCustomers.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                    Loading Customers...
+                  </td>
+                </tr>
+              ) : filteredCustomers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-gray-500">
                     No customers found.
@@ -114,14 +107,14 @@ export default function CustomersPage() {
                     <td className="p-5">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 font-semibold text-[#A88442]">
-                          {customer.name.charAt(0)}
+                          {customer.name ? customer.name.charAt(0) : "C"}
                         </div>
                         <div>
                           <p className="font-semibold text-gray-900">
                             {customer.name}
                           </p>
                           <p className="text-xs text-gray-400">
-                            ID: {customer.id}
+                            ID: {customer.id.slice(-6)}
                           </p>
                         </div>
                       </div>

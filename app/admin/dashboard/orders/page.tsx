@@ -1,69 +1,48 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Eye, Filter, Package, Clock, CheckCircle2, Truck, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, Eye, Package, Clock, CheckCircle2, Truck, XCircle } from "lucide-react";
+import Link from "next/link";
 
-// Mock Orders Data
-const mockOrders = [
-  {
-    id: "ORD-9821",
-    customer: "Tanvir Ahmed",
-    email: "tanvir.ahmed@example.com",
-    itemsCount: 3,
-    total: "৳7,800",
-    paymentStatus: "Paid",
-    orderStatus: "Processing",
-    date: "03 Aug, 2026",
-  },
-  {
-    id: "ORD-9820",
-    customer: "Sumi Akter",
-    email: "sumi.akter@example.com",
-    itemsCount: 1,
-    total: "৳2,400",
-    paymentStatus: "Paid",
-    orderStatus: "Shipped",
-    date: "02 Aug, 2026",
-  },
-  {
-    id: "ORD-9819",
-    customer: "Rahim Chowdhury",
-    email: "rahim.c@example.com",
-    itemsCount: 4,
-    total: "৳14,500",
-    paymentStatus: "Paid",
-    orderStatus: "Delivered",
-    date: "01 Aug, 2026",
-  },
-  {
-    id: "ORD-9818",
-    customer: "Nusrat Jahan",
-    email: "nusrat.j@example.com",
-    itemsCount: 2,
-    total: "৳4,200",
-    paymentStatus: "Pending",
-    orderStatus: "Processing",
-    date: "31 Jul, 2026",
-  },
-  {
-    id: "ORD-9817",
-    customer: "Kamal Hossain",
-    email: "kamal.h@example.com",
-    itemsCount: 1,
-    total: "৳3,100",
-    paymentStatus: "Failed",
-    orderStatus: "Cancelled",
-    date: "30 Jul, 2026",
-  },
-];
+interface OrderItem {
+  id: string;
+  displayId: string;
+  customer: string;
+  email: string;
+  itemsCount: number;
+  total: string;
+  paymentStatus: string;
+  orderStatus: string;
+  date: string;
+}
 
 export default function OrdersPage() {
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
-  const filteredOrders = mockOrders.filter((order) => {
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        const res = await fetch("/api/admin/orders");
+        const data = await res.json();
+        if (data.success) {
+          setOrders(data.orders);
+        }
+      } catch (error) {
+        console.error("Failed to load orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchOrders();
+  }, []);
+
+  const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.displayId.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.email.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -129,7 +108,13 @@ export default function OrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredOrders.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="p-8 text-center text-gray-500">
+                    Loading Orders...
+                  </td>
+                </tr>
+              ) : filteredOrders.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="p-8 text-center text-gray-500">
                     No orders found.
@@ -143,7 +128,7 @@ export default function OrdersPage() {
                   >
                     {/* Order ID */}
                     <td className="p-5 font-semibold text-gray-900">
-                      {order.id}
+                      {order.displayId}
                     </td>
 
                     {/* Customer Info */}
@@ -216,10 +201,13 @@ export default function OrdersPage() {
 
                     {/* Actions */}
                     <td className="p-5 text-right">
-                      <button className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+                      <Link
+                        href={`/admin/dashboard/orders/${order.id}`}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
+                      >
                         <Eye size={14} />
                         View Details
-                      </button>
+                      </Link>
                     </td>
                   </tr>
                 ))
