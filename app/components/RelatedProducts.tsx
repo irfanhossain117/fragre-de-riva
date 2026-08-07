@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 
 type Product = {
-  id: number;
+  id: string;
   slug: string;
   name: string;
   price: number;
@@ -13,7 +13,7 @@ type Product = {
 };
 
 type Props = {
-  currentId: number;
+  currentId: string;
   category: string;
 };
 
@@ -28,7 +28,13 @@ export default function RelatedProducts({ currentId, category }: Props) {
         const data = await res.json();
         
         if (data.success && Array.isArray(data.data)) {
-          setRelated(data.data.slice(0, 4));
+          const formatted = data.data.map((p: any) => ({
+            ...p,
+            id: p._id.toString(),
+            price: p.variants?.[0]?.price || 0,
+            image: p.image || p.images?.[0] || "",
+          }));
+          setRelated(formatted.slice(0, 4));
         }
       } catch (err) {
         console.error("Failed to fetch related products", err);
@@ -37,7 +43,9 @@ export default function RelatedProducts({ currentId, category }: Props) {
       }
     }
 
-    fetchRelatedProducts();
+    if (category) {
+      fetchRelatedProducts();
+    }
   }, [currentId, category]);
 
   if (loading || related.length === 0) return null;

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../components/ProductCard";
-import { products as staticProducts } from "../components/products";
 
 export default function ShopPage() {
   const [dbProducts, setDbProducts] = useState<any[]>([]);
@@ -11,17 +10,16 @@ export default function ShopPage() {
   const [category, setCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
-  // ডাটাবেস থেকে নতুন প্রোডাক্টগুলো ফেচ করা
+  // ডাটাবেস থেকে প্রোডাক্টগুলো ফেচ করা
   useEffect(() => {
     async function fetchProducts() {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
         if (data.success) {
-          // MongoDB এর _id কে id তে রূপান্তর বা ম্যাপিং করা যাতে ProductCard ঠিকমতো কাজ করে
           const formatted = data.products.map((p: any) => ({
             ...p,
-            id: p._id,
+            id: p._id.toString(), // ObjectId কে স্ট্রিং এ রূপান্তর
             price: p.variants?.[0]?.price || 0,
             volume: p.variants?.[0]?.volume || "50ml",
             stock: p.totalStock || 0,
@@ -39,19 +37,14 @@ export default function ShopPage() {
     fetchProducts();
   }, []);
 
-  // স্ট্যাটিক প্রোডাক্ট এবং ডাটাবেসের প্রোডাক্ট একসাথে কম্বাইন করা
-  const allProducts = useMemo(() => {
-    return [...dbProducts, ...staticProducts];
-  }, [dbProducts]);
-
   const categories = useMemo(() => {
-    return ["All", ...new Set(allProducts.map((p) => p.category))];
-  }, [allProducts]);
+    return ["All", ...new Set(dbProducts.map((p) => p.category))];
+  }, [dbProducts]);
 
   const filteredProducts = useMemo(() => {
     const q = search.trim().toLowerCase();
 
-    let result = allProducts.filter((product) => {
+    let result = dbProducts.filter((product) => {
       const matchesSearch =
         !q ||
         product.name?.toLowerCase().includes(q) ||
@@ -78,7 +71,7 @@ export default function ShopPage() {
     }
 
     return result;
-  }, [allProducts, search, category, sortBy]);
+  }, [dbProducts, search, category, sortBy]);
 
   return (
     <main className="bg-[#F8F4EE] min-h-screen py-32">
@@ -176,7 +169,7 @@ export default function ShopPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id || product._id} product={product} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
