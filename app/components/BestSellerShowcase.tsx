@@ -34,7 +34,7 @@ export default function BestSellerShowcase() {
     subtitle: "Signature Creation",
     description: "A rich composition of oud, amber and rare florals designed to create a memorable presence. Elegant, confident and timeless.",
     price: 2490,
-    image: "/products/gaga.jpeg",
+    image: "/products/logo.jpeg",
     topNotes: "Bergamot, Lemon",
     heartNotes: "Rose, Jasmine",
     baseNotes: "Oud, Amber, Musk",
@@ -55,7 +55,7 @@ export default function BestSellerShowcase() {
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <div className="relative h-[450px] rounded-[40px] overflow-hidden shadow-2xl">
             <Image
-              src={displayProduct.image || "/products/gugu.jpeg"}
+              src={displayProduct.image || "/products/logo.jpeg"}
               alt={displayProduct.name}
               fill
               className="object-cover"
