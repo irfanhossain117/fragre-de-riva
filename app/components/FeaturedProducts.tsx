@@ -10,17 +10,10 @@ export default function FeaturedProducts() {
   useEffect(() => {
     async function fetchFeatured() {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products/featured");
         const data = await res.json();
         if (data.success) {
-          const formatted = data.products.map((p: any) => ({
-            ...p,
-            id: p._id.toString(),
-            price: p.variants?.[0]?.price || 0,
-            image: p.image || p.images?.[0] || "",
-          }));
-          // শুধু ফিচারড প্রোডাক্ট ফিল্টার করতে পারেন অথবা প্রথম ৪-৮টি দেখাতে পারেন
-          setProducts(formatted.slice(0, 4));
+          setProducts(data.products.slice(0, 4));
         }
       } catch (error) {
         console.error("Error fetching featured products:", error);

@@ -5,7 +5,7 @@ import Toast from "./ui/Toast";
 
 type Review = {
   _id: string;
-  productId: number;
+  productId: string;
   rating: number;
   comment: string;
   userName: string;
@@ -13,7 +13,7 @@ type Review = {
 };
 
 type Props = {
-  productId: number;
+  productId: string;
 };
 
 export default function ProductReviews({ productId }: Props) {

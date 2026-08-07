@@ -24,7 +24,7 @@ export default function RelatedProducts({ currentId, category }: Props) {
   useEffect(() => {
     async function fetchRelatedProducts() {
       try {
-        const res = await fetch(`/api/products?category=${encodeURIComponent(category)}&exclude=${currentId}`);
+        const res = await fetch(`/api/products?category=${encodeURIComponent(category)}&exclude=${currentId}&published=true`);
         const data = await res.json();
         
         if (data.success && Array.isArray(data.data)) {

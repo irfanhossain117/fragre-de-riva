@@ -3,33 +3,41 @@ import { connectDB } from "../../../lib/mongodb";
 import Settings from "../../../models/Settings"; // Apnar Settings model thakte hobe, ba User model use korte paren password-er jonno
 import bcrypt from "bcryptjs";
 
-// GET Settings
+// GET Settings (public — used by storefront for Instagram gallery etc, so never include adminPassword)
 export async function GET() {
   try {
     await connectDB();
     let settings = await Settings.findOne({});
-    
+
     if (!settings) {
       // Default settings if not found
       settings = await Settings.create({
         storeName: "Fragré De Riva",
         supportEmail: "support@fragrederiva.com",
+        instagramImages: [],
       });
     }
 
-    return NextResponse.json({ success: true, settings });
+    const safeSettings = {
+      _id: settings._id,
+      storeName: settings.storeName,
+      supportEmail: settings.supportEmail,
+      instagramImages: settings.instagramImages || [],
+    };
+
+    return NextResponse.json({ success: true, settings: safeSettings });
   } catch (error) {
     console.error("GET SETTINGS ERROR:", error);
     return NextResponse.json({ success: false, message: "Failed to fetch settings" }, { status: 500 });
   }
 }
 
-// UPDATE Settings & Password
+// UPDATE Settings & Password (auth-protected via middleware — see middleware.ts)
 export async function PUT(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
-    const { storeName, supportEmail, newPassword, confirmPassword } = body;
+    const { storeName, supportEmail, newPassword, confirmPassword, instagramImages } = body;
 
     let settings = await Settings.findOne({});
     if (!settings) {
@@ -38,6 +46,9 @@ export async function PUT(req: NextRequest) {
 
     if (storeName) settings.storeName = storeName;
     if (supportEmail) settings.supportEmail = supportEmail;
+    if (Array.isArray(instagramImages)) {
+      settings.instagramImages = instagramImages.filter((url: unknown) => typeof url === "string" && url.trim());
+    }
 
     // Password update logic if provided
     if (newPassword || confirmPassword) {
@@ -48,7 +59,7 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ success: false, message: "Password must be at least 6 characters." }, { status: 400 });
       }
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      settings.adminPassword = hashedPassword; // Apnar schema anujayi field adjust kore nite paren
+      settings.adminPassword = hashedPassword;
     }
 
     await settings.save();

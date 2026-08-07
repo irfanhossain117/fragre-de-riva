@@ -10,8 +10,15 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
     const excludeId = searchParams.get("exclude");
+    const publishedOnly = searchParams.get("published");
 
     let query: any = {};
+
+    // পাবলিক পেজ (Shop, Related Products) থেকে ?published=true পাঠালে শুধু published প্রোডাক্ট দেখাবে।
+    // Admin dashboard এই প্যারামিটার পাঠায় না, তাই draft সহ সব প্রোডাক্ট দেখতে পাবে।
+    if (publishedOnly === "true") {
+      query.isPublished = true;
+    }
 
     // যদি ক্যাটাগরি দেওয়া থাকে, কুয়েরিতে যুক্ত করুন
     if (category) {

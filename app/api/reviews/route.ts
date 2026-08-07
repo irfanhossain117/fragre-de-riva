@@ -42,7 +42,9 @@ async function connectDB() {
 
 // ৩. রিভিউ স্কিমা এবং মডেল তৈরি (যদি আগে থেকে না থাকে)
 const reviewSchema = new mongoose.Schema({
-  productId: { type: Number, required: true },
+  // Product's _id একটা MongoDB ObjectId string (যেমন "65b2a1f8e4a1234567890abc"), Number নয় —
+  // আগে এটা Number টাইপ থাকায় Number(objectIdString) সবসময় NaN হয়ে যেত এবং review save/fetch ফেইল করত।
+  productId: { type: String, required: true },
   rating: { type: Number, required: true },
   comment: { type: String, required: true },
   userName: { type: String, required: true },
@@ -68,7 +70,7 @@ export async function POST(request: Request) {
 
     // ডাটাবেজে সেভ করা
     const newReview = await Review.create({
-      productId: Number(productId),
+      productId: String(productId),
       rating: Number(rating),
       comment,
       userName,
@@ -101,7 +103,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const reviews = await Review.find({ productId: Number(productId) }).sort({ createdAt: -1 });
+    const reviews = await Review.find({ productId: String(productId) }).sort({ createdAt: -1 });
 
     return NextResponse.json({ success: true, data: reviews }, { status: 200 });
   } catch (error) {

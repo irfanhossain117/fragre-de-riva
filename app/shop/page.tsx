@@ -14,7 +14,7 @@ export default function ShopPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products?published=true");
         const data = await res.json();
         if (data.success) {
           const formatted = data.products.map((p: any) => ({

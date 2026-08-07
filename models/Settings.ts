@@ -4,6 +4,7 @@ interface ISettings extends mongoose.Document {
   storeName: string;
   supportEmail: string;
   adminPassword?: string;
+  instagramImages: string[];
 }
 
 const SettingsSchema = new Schema<ISettings>(
@@ -11,6 +12,7 @@ const SettingsSchema = new Schema<ISettings>(
     storeName: { type: String, required: true, default: "Fragré De Riva" },
     supportEmail: { type: String, required: true, default: "support@fragrederiva.com" },
     adminPassword: { type: String },
+    instagramImages: { type: [String], default: [] },
   },
   { timestamps: true }
 );

@@ -13,11 +13,12 @@ export default function InstagramGallery() {
   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch("/api/settings/instagram")
+    fetch("/api/settings")
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setImages(data);
+        const gallery = data?.settings?.instagramImages;
+        if (Array.isArray(gallery) && gallery.length > 0) {
+          setImages(gallery);
         }
       })
       .catch((err) => console.error("Failed to load instagram gallery", err));

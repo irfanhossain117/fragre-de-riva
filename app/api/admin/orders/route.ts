@@ -10,18 +10,20 @@ export async function GET() {
     const orders = await Order.find({}).sort({ createdAt: -1 });
 
     const formattedOrders = orders.map((order) => {
-      const items = order.items || order.products || [];
+      const items = order.items || [];
       const itemsCount = items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
 
       return {
         id: order._id.toString(),
-        displayId: `ORD-${order._id.toString().slice(-4).toUpperCase()}`,
-        customer: order.fullName || order.customerName || "Valued Customer",
-        email: order.email || order.customerEmail || "N/A",
+        displayId: order.orderId || `ORD-${order._id.toString().slice(-4).toUpperCase()}`,
+        customer: order.customer?.name || "Valued Customer",
+        phone: order.customer?.phone || "N/A",
+        email: order.customer?.email || "N/A",
+        address: order.customer?.address || "",
         itemsCount: itemsCount || 1,
-        total: `৳${(order.totalPrice || order.totalAmount || 0).toLocaleString()}`,
-        paymentStatus: order.paymentStatus || "Paid",
-        orderStatus: order.status || order.orderStatus || "Processing",
+        total: `৳${(order.total || 0).toLocaleString()}`,
+        paymentStatus: order.paymentStatus || "Pending",
+        orderStatus: order.status || "Pending",
         date: order.createdAt
           ? new Date(order.createdAt).toLocaleDateString("en-GB", {
               day: "2-digit",

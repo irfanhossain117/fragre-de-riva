@@ -6,14 +6,20 @@ export async function GET() {
   try {
     await connectDB();
 
-    // bestSeller ফিল্ডটি true এমন প্রোডাক্ট খুঁজবে
-    const bestseller = await Product.findOne({ bestSeller: true }).lean();
+    // bestSeller ফিল্ডটি true এবং published এমন প্রোডাক্ট খুঁজবে
+    // sortOrder/updatedAt দিয়ে সাজানো, যাতে একাধিক bestSeller থাকলেও ফলাফল predictable হয়
+    const bestseller = await Product.findOne({
+      bestSeller: true,
+      isPublished: true,
+    })
+      .sort({ sortOrder: 1, updatedAt: -1 })
+      .lean();
 
     if (!bestseller) {
       return NextResponse.json({ error: "No bestseller product found" }, { status: 404 });
     }
 
-    // ভেরিয়েন্ট থেকে দাম বের করে নেওয়া (যদি variants অ্যারে থাকে)
+    // ভেরিয়েন্ট থেকে দাম বের করে নেওয়া (যদি variants অ্যারে থাকে)
     let price = 0;
     if (bestseller.variants && bestseller.variants.length > 0) {
       price = bestseller.variants[0].price;
@@ -21,7 +27,8 @@ export async function GET() {
 
     const formattedProduct = {
       ...bestseller,
-      price, // প্রাইস ফিল্ডটি আলাদাভাবে যুক্ত করা হলো যাতে ফ্রন্টএন্ডে সমস্যা না হয়
+      _id: bestseller._id.toString(),
+      price, // প্রাইস ফিল্ডটি আলাদাভাবে যুক্ত করা হলো যাতে ফ্রন্টএন্ডে সমস্যা না হয়
     };
 
     return NextResponse.json(formattedProduct, { status: 200 });

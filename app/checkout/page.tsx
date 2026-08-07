@@ -112,7 +112,9 @@ ${coupon ? coupon.code : "None"}
     coupon,
   ]);
 
-  function handleCheckout() {
+  const [placingOrder, setPlacingOrder] = useState(false);
+
+  async function handleCheckout() {
     if (cart.length === 0) {
       setError("Your cart is empty.");
       return;
@@ -139,6 +141,38 @@ ${coupon ? coupon.code : "None"}
     }
 
     setError("");
+    setPlacingOrder(true);
+
+    // Order-টা DB-তে save করা হচ্ছে, যাতে Admin -> Orders ও Analytics-এ দেখা যায়।
+    // Save fail করলেও customer-কে আটকানো হচ্ছে না — WhatsApp checkout-ই মূল ফ্লো,
+    // তাই DB save কে "best effort" হিসেবে ট্রিট করা হচ্ছে।
+    try {
+      await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: { name, phone, address, note },
+          items: (cart as ExtendedCartItem[]).map((item) => ({
+            productId: typeof item.id === "string" ? item.id : undefined,
+            name: item.name,
+            image: item.image || "",
+            volume: item.volume || item.size || "",
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          subtotal,
+          deliveryCharge: delivery,
+          discount,
+          coupon: coupon?.code || "",
+          total: grandTotal,
+          paymentMethod: "COD",
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to save order to database:", err);
+    } finally {
+      setPlacingOrder(false);
+    }
 
     const url = `https://api.whatsapp.com/send?phone=8801511856101&text=${whatsappMessage}`;
 
@@ -365,9 +399,10 @@ ${coupon ? coupon.code : "None"}
 
               <button
                 onClick={handleCheckout}
-                className="w-full mt-6 sm:mt-8 py-3.5 sm:py-4 rounded-full bg-[#A88442] text-white text-sm sm:text-base font-semibold hover:opacity-90 transition"
+                disabled={placingOrder}
+                className="w-full mt-6 sm:mt-8 py-3.5 sm:py-4 rounded-full bg-[#A88442] text-white text-sm sm:text-base font-semibold hover:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Place Order on WhatsApp
+                {placingOrder ? "Placing Order..." : "Place Order on WhatsApp"}
               </button>
 
               <Link

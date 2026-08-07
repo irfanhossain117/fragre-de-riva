@@ -1,24 +1,27 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lock, Store, Save } from "lucide-react";
+import { Lock, Store, Save, Images } from "lucide-react";
+import ImageUploader from "../../../components/admin/ImageUploader";
 
 export default function SettingsPage() {
   const [storeName, setStoreName] = useState("");
   const [supportEmail, setSupportEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [instagramImages, setInstagramImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const res = await fetch("/api/admin/settings");
+        const res = await fetch("/api/settings");
         const data = await res.json();
         if (data.success && data.settings) {
           setStoreName(data.settings.storeName || "");
           setSupportEmail(data.settings.supportEmail || "");
+          setInstagramImages(data.settings.instagramImages || []);
         }
       } catch (error) {
         console.error("Failed to load settings:", error);
@@ -33,10 +36,16 @@ export default function SettingsPage() {
     setMessage(null);
 
     try {
-      const res = await fetch("/api/admin/settings", {
+      const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ storeName, supportEmail, newPassword, confirmPassword }),
+        body: JSON.stringify({
+          storeName,
+          supportEmail,
+          newPassword,
+          confirmPassword,
+          instagramImages,
+        }),
       });
 
       const data = await res.json();
@@ -104,6 +113,21 @@ export default function SettingsPage() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Instagram Gallery */}
+        <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+            <Images className="text-[#A88442]" size={22} />
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Instagram Gallery</h3>
+              <p className="text-xs text-gray-500">
+                Images shown in the homepage "Instagram Gallery" section
+              </p>
+            </div>
+          </div>
+
+          <ImageUploader images={instagramImages} setImages={setInstagramImages} />
         </div>
 
         {/* Security / Password */}

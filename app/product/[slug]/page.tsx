@@ -16,7 +16,7 @@ type Props = {
 async function getProductBySlug(slug: string) {
   try {
     await connectDB();
-    const product = await Product.findOne({ slug }).lean();
+    const product = await Product.findOne({ slug, isPublished: true }).lean();
     if (!product) return null;
 
     // MongoDB অবজেক্টকে প্রপার্টির সাথে ম্যাপ করা
