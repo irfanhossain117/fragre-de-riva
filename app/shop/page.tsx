@@ -1,30 +1,65 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../components/ProductCard";
-import { products } from "../components/products";
+import { products as staticProducts } from "../components/products";
 
 export default function ShopPage() {
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
-  const categories = useMemo(() => {
-    return ["All", ...new Set(products.map((p) => p.category))];
+  // ডাটাবেস থেকে নতুন প্রোডাক্টগুলো ফেচ করা
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        if (data.success) {
+          // MongoDB এর _id কে id তে রূপান্তর বা ম্যাপিং করা যাতে ProductCard ঠিকমতো কাজ করে
+          const formatted = data.products.map((p: any) => ({
+            ...p,
+            id: p._id,
+            price: p.variants?.[0]?.price || 0,
+            volume: p.variants?.[0]?.volume || "50ml",
+            stock: p.totalStock || 0,
+            image: p.image || p.images?.[0] || "",
+          }));
+          setDbProducts(formatted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products from DB:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
   }, []);
+
+  // স্ট্যাটিক প্রোডাক্ট এবং ডাটাবেসের প্রোডাক্ট একসাথে কম্বাইন করা
+  const allProducts = useMemo(() => {
+    return [...dbProducts, ...staticProducts];
+  }, [dbProducts]);
+
+  const categories = useMemo(() => {
+    return ["All", ...new Set(allProducts.map((p) => p.category))];
+  }, [allProducts]);
 
   const filteredProducts = useMemo(() => {
     const q = search.trim().toLowerCase();
 
-    let result = products.filter((product) => {
+    let result = allProducts.filter((product) => {
       const matchesSearch =
         !q ||
-        product.name.toLowerCase().includes(q) ||
-        product.category.toLowerCase().includes(q) ||
-        product.description.toLowerCase().includes(q) ||
-        product.topNotes.toLowerCase().includes(q) ||
-        product.heartNotes.toLowerCase().includes(q) ||
-        product.baseNotes.toLowerCase().includes(q);
+        product.name?.toLowerCase().includes(q) ||
+        product.category?.toLowerCase().includes(q) ||
+        product.description?.toLowerCase().includes(q) ||
+        product.topNotes?.toLowerCase().includes(q) ||
+        product.heartNotes?.toLowerCase().includes(q) ||
+        product.baseNotes?.toLowerCase().includes(q);
 
       const matchesCategory =
         category === "All" || product.category === category;
@@ -33,17 +68,17 @@ export default function ShopPage() {
     });
 
     if (sortBy === "price-asc") {
-      result = [...result].sort((a, b) => a.price - b.price);
+      result = [...result].sort((a, b) => (a.price || 0) - (b.price || 0));
     } else if (sortBy === "price-desc") {
-      result = [...result].sort((a, b) => b.price - a.price);
+      result = [...result].sort((a, b) => (b.price || 0) - (a.price || 0));
     } else if (sortBy === "name-asc") {
       result = [...result].sort((a, b) =>
-        a.name.localeCompare(b.name)
+        (a.name || "").localeCompare(b.name || "")
       );
     }
 
     return result;
-  }, [search, category, sortBy]);
+  }, [allProducts, search, category, sortBy]);
 
   return (
     <main className="bg-[#F8F4EE] min-h-screen py-32">
@@ -112,7 +147,7 @@ export default function ShopPage() {
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
           <p className="text-gray-500">
-            Showing {filteredProducts.length} product(s)
+            {loading ? "Loading products..." : `Showing ${filteredProducts.length} product(s)`}
           </p>
 
           {(search || category !== "All" || sortBy !== "featured") && (
@@ -141,7 +176,7 @@ export default function ShopPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id || product._id} product={product} />
             ))}
           </div>
         )}
