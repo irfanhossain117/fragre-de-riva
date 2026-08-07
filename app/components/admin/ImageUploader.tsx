@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { UploadCloud, X, Loader2 } from "lucide-react";
 
 interface ImageUploaderProps {
@@ -14,6 +13,7 @@ export default function ImageUploader({
   setImages,
 }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -51,11 +51,11 @@ export default function ImageUploader({
       if (inputRef.current) {
         inputRef.current.value = "";
       }
+
       setUploading(false);
     }
   }
 
-  // Drag and Drop Handlers
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -69,36 +69,34 @@ export default function ImageUploader({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+
+    if (e.dataTransfer.files.length > 0) {
       handleFiles(e.dataTransfer.files);
     }
   };
 
   function removeImage(index: number) {
-    setImages(images.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
   }
 
   return (
     <div className="space-y-6">
-      {/* Upload Dropzone */}
       <div
         onClick={() => !uploading && inputRef.current?.click()}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition cursor-pointer ${
+        className={`flex cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition ${
           isDragging
             ? "border-[#A88442] bg-amber-50/50"
             : "border-gray-300 hover:border-[#A88442] hover:bg-gray-50/50"
-        } ${uploading ? "opacity-60 cursor-not-allowed" : ""}`}
+        } ${uploading ? "cursor-not-allowed opacity-60" : ""}`}
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-[#A88442] mb-3">
-          {uploading ? (
-            <Loader2 className="animate-spin" size={28} />
-          ) : (
-            <UploadCloud size={28} />
-          )}
-        </div>
+        {uploading ? (
+          <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#A88442]" />
+        ) : (
+          <UploadCloud className="mb-4 h-12 w-12 text-[#A88442]" />
+        )}
 
         <p className="text-base font-semibold text-gray-900">
           {uploading
@@ -121,22 +119,19 @@ export default function ImageUploader({
         />
       </div>
 
-      {/* Uploaded Images Preview Grid */}
       {images.length > 0 && (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {images.map((image, index) => (
             <div
               key={index}
-              className="group relative h-36 w-full overflow-hidden rounded-2xl border border-gray-200 bg-gray-50"
+              className="group relative h-36 overflow-hidden rounded-2xl border border-gray-200 bg-gray-50"
             >
-              <Image
+              <img
                 src={image}
-                alt={`Product Image ${index + 1}`}
-                fill
-                className="object-cover transition duration-300 group-hover:scale-105"
+                alt={`Product ${index + 1}`}
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
               />
 
-              {/* Remove Image Button */}
               <button
                 type="button"
                 onClick={() => removeImage(index)}
