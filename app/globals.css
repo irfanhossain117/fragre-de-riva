@@ -5,7 +5,6 @@
   --foreground: #171717;
 }
 
-/* Replaced unknown @theme at-rule with valid :root custom properties */
 :root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -24,4 +23,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* অ্যাডমিন প্যানেল বা ফর্মের ইনপুট ও টেক্সটএরিয়া কালার ফিক্স করার জন্য */
+input, textarea, select {
+  color: #111827 !important; /* লেখার রঙ গাঢ় কালো */
+  background-color: #ffffff !important; /* ব্যাকগ্রাউন্ড সাদা */
+}
+
+/* প্লেসহোল্ডারের (Placeholder) রঙ হালকা গ্রে */
+input::placeholder, textarea::placeholder {
+  color: #9CA3AF !important;
 }
