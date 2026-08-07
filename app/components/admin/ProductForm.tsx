@@ -37,8 +37,6 @@ export default function ProductForm({
 
   // =========================
   // Images
-  // (kept backward-compatible: falls back to the legacy single `image`
-  // field if an older product has no `images` array yet)
   // =========================
   const [galleryImages, setGalleryImages] = useState<string[]>(
     product?.images && product.images.length > 0
@@ -247,15 +245,15 @@ export default function ProductForm({
   }
 
   return (
-    <div className="rounded-3xl bg-white p-8 shadow">
-      <h2 className="mb-8 text-3xl font-bold">
+    <div className="rounded-3xl bg-white p-8 shadow text-gray-900">
+      <h2 className="mb-8 text-3xl font-bold text-gray-900">
         {editMode ? "Edit Product" : "Add Product"}
       </h2>
 
       <form onSubmit={handleSubmit} className="grid gap-6">
         {/* Product Name */}
         <div>
-          <label className="mb-2 block font-medium">Product Name</label>
+          <label className="mb-2 block font-medium text-gray-900">Product Name</label>
           <input
             type="text"
             value={name}
@@ -265,62 +263,62 @@ export default function ProductForm({
                 setSlug(generateSlug(e.target.value));
               }
             }}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900"
             required
           />
         </div>
 
         {/* Slug */}
         <div>
-          <label className="mb-2 block font-medium">Slug</label>
+          <label className="mb-2 block font-medium text-gray-900">Slug</label>
           <input
             value={slug}
             onChange={(e) => setSlug(generateSlug(e.target.value))}
-            className="w-full rounded-xl border bg-gray-100 p-4"
+            className="w-full rounded-xl border border-gray-300 bg-gray-50 p-4 text-gray-900"
             required
           />
         </div>
 
         {/* Brand */}
         <div>
-          <label className="mb-2 block font-medium">Brand</label>
+          <label className="mb-2 block font-medium text-gray-900">Brand</label>
           <input
             value={brand}
             onChange={(e) => setBrand(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900"
             required
           />
         </div>
 
         {/* Category */}
         <div>
-          <label className="mb-2 block font-medium">Category</label>
+          <label className="mb-2 block font-medium text-gray-900">Category</label>
           <input
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900"
             required
           />
         </div>
 
         {/* SKU */}
         <div>
-          <label className="mb-2 block font-medium">SKU</label>
+          <label className="mb-2 block font-medium text-gray-900">SKU</label>
           <input
             value={sku}
             onChange={(e) => setSku(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="mb-2 block font-medium">Description</label>
+          <label className="mb-2 block font-medium text-gray-900">Description</label>
           <textarea
             rows={5}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900"
           />
         </div>
 
@@ -330,26 +328,26 @@ export default function ProductForm({
             placeholder="Top Notes"
             value={topNotes}
             onChange={(e) => setTopNotes(e.target.value)}
-            className="rounded-xl border p-4"
+            className="rounded-xl border border-gray-300 p-4 bg-white text-gray-900 placeholder:text-gray-400"
           />
           <input
             placeholder="Heart Notes"
             value={heartNotes}
             onChange={(e) => setHeartNotes(e.target.value)}
-            className="rounded-xl border p-4"
+            className="rounded-xl border border-gray-300 p-4 bg-white text-gray-900 placeholder:text-gray-400"
           />
           <input
             placeholder="Base Notes"
             value={baseNotes}
             onChange={(e) => setBaseNotes(e.target.value)}
-            className="rounded-xl border p-4"
+            className="rounded-xl border border-gray-300 p-4 bg-white text-gray-900 placeholder:text-gray-400"
           />
         </div>
 
         {/* Variants */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Variants</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Variants</h3>
             <button
               type="button"
               onClick={addVariant}
@@ -371,7 +369,7 @@ export default function ProductForm({
                 onChange={(e) =>
                   updateVariant(index, "volume", e.target.value)
                 }
-                className="rounded-xl border p-3"
+                className="rounded-xl border border-gray-300 p-3 bg-white text-gray-900 placeholder:text-gray-400"
                 required
               />
               <input
@@ -381,7 +379,7 @@ export default function ProductForm({
                 onChange={(e) =>
                   updateVariant(index, "price", e.target.value)
                 }
-                className="rounded-xl border p-3"
+                className="rounded-xl border border-gray-300 p-3 bg-white text-gray-900 placeholder:text-gray-400"
                 required
                 min={0}
               />
@@ -392,7 +390,7 @@ export default function ProductForm({
                 onChange={(e) =>
                   updateVariant(index, "stock", e.target.value)
                 }
-                className="rounded-xl border p-3"
+                className="rounded-xl border border-gray-300 p-3 bg-white text-gray-900 placeholder:text-gray-400"
                 required
                 min={0}
               />
@@ -410,13 +408,13 @@ export default function ProductForm({
 
         {/* Images */}
         <div>
-          <h3 className="mb-4 text-xl font-semibold">Product Images</h3>
+          <h3 className="mb-4 text-xl font-semibold text-gray-900">Product Images</h3>
           <ImageUploader images={galleryImages} setImages={setGalleryImages} />
         </div>
 
         {/* Homepage Checkboxes */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer text-gray-900 font-medium">
             <input
               type="checkbox"
               checked={featured}
@@ -424,7 +422,7 @@ export default function ProductForm({
             />
             Featured
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer text-gray-900 font-medium">
             <input
               type="checkbox"
               checked={bestSeller}
@@ -432,7 +430,7 @@ export default function ProductForm({
             />
             Best Seller
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer text-gray-900 font-medium">
             <input
               type="checkbox"
               checked={isPublished}
@@ -448,19 +446,19 @@ export default function ProductForm({
             placeholder="SEO Title"
             value={seoTitle}
             onChange={(e) => setSeoTitle(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900 placeholder:text-gray-400"
           />
           <textarea
             placeholder="SEO Description"
             value={seoDescription}
             onChange={(e) => setSeoDescription(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900 placeholder:text-gray-400"
           />
           <input
             placeholder="perfume,luxury,oud"
             value={seoKeywords}
             onChange={(e) => setSeoKeywords(e.target.value)}
-            className="w-full rounded-xl border p-4"
+            className="w-full rounded-xl border border-gray-300 p-4 bg-white text-gray-900 placeholder:text-gray-400"
           />
         </div>
 
