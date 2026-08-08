@@ -1,66 +1,14 @@
-import { NextResponse } from "next/server";
-import mongoose from "mongoose";
+import { NextRequest, NextResponse } from "next/server";
+import { connectDB } from "@/lib/mongodb";
+import Review from "@/models/Review";
 
-
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
-}
-
-// ২. পারফরম্যান্স ফিক্স: Mongoose Connection Caching (Next.js serverless/hot-reload অপ্টিমাইজেশন)
-let cached = (global as any).mongoose;
-
-if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
-}
-
-async function connectDB() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongooseInstance) => {
-      return mongooseInstance;
-    });
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
-  return cached.conn;
-}
-
-// ৩. রিভিউ স্কিমা এবং মডেল তৈরি (যদি আগে থেকে না থাকে)
-const reviewSchema = new mongoose.Schema({
-  // Product's _id একটা MongoDB ObjectId string (যেমন "65b2a1f8e4a1234567890abc"), Number নয় —
-  // আগে এটা Number টাইপ থাকায় Number(objectIdString) সবসময় NaN হয়ে যেত এবং review save/fetch ফেইল করত।
-  productId: { type: String, required: true },
-  rating: { type: Number, required: true },
-  comment: { type: String, required: true },
-  userName: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
-const Review = mongoose.models.Review || mongoose.model("Review", reviewSchema);
-
-// ৪. POST মেথড: নতুন রিভিউ ডাটাবেজে সেভ করার জন্য
-export async function POST(request: Request) {
+// ১. POST মেথড: নতুন রিভিউ ডাটাবেজে সেভ করার জন্য
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
     const body = await request.json();
     const { productId, rating, comment, userName } = body;
 
-    // ভ্যালিডেশন চেক
     if (!productId || !rating || !comment || !userName) {
       return NextResponse.json(
         { success: false, error: "All fields are required" },
@@ -68,7 +16,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // ডাটাবেজে সেভ করা
     const newReview = await Review.create({
       productId: String(productId),
       rating: Number(rating),
@@ -89,8 +36,8 @@ export async function POST(request: Request) {
   }
 }
 
-// ৫. GET মেথড: নির্দিষ্ট প্রোডাক্টের রিভিউ ফেচ করার জন্য
-export async function GET(request: Request) {
+// ২. GET মেথড: নির্দিষ্ট প্রোডাক্টের রিভিউ ফেচ করার জন্য (public, product page)
+export async function GET(request: NextRequest) {
   try {
     await connectDB();
     const { searchParams } = new URL(request.url);

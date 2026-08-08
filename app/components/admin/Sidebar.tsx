@@ -10,6 +10,8 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Ticket,
+  Star,
 } from "lucide-react";
 
 const menu = [
@@ -27,6 +29,16 @@ const menu = [
     title: "Orders",
     href: "/admin/dashboard/orders",
     icon: ShoppingCart,
+  },
+  {
+    title: "Coupons",
+    href: "/admin/dashboard/coupons",
+    icon: Ticket,
+  },
+  {
+    title: "Reviews",
+    href: "/admin/dashboard/reviews",
+    icon: Star,
   },
   {
     title: "Customers",

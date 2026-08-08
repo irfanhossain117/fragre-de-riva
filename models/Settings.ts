@@ -10,7 +10,7 @@ interface ISettings extends mongoose.Document {
 const SettingsSchema = new Schema<ISettings>(
   {
     storeName: { type: String, required: true, default: "Fragré De Riva" },
-    supportEmail: { type: String, required: true, default: "support@fragrederiva.com" },
+    supportEmail: { type: String, required: true, default: "connect.irfanhossain@gmail.com" },
     adminPassword: { type: String },
     instagramImages: { type: [String], default: [] },
   },

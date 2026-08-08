@@ -325,7 +325,7 @@ ${coupon ? coupon.code : "None"}
                 </div>
 
                 <div className="pt-2 min-w-0">
-                  <CouponBox />
+                  <CouponBox subtotal={subtotal} />
                 </div>
               </div>
             </section>

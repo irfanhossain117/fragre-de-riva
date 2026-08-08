@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Order";
 
+interface OrderItemInput {
+  productId?: string;
+  name: string;
+  image?: string;
+  volume?: string;
+  price: number;
+  quantity: number;
+}
+
 /* =========================
    CREATE ORDER
    Checkout page calls this right before redirecting to WhatsApp,
@@ -51,7 +60,7 @@ export async function POST(req: NextRequest) {
         address: customer.address,
         note: customer.note || "",
       },
-      items: items.map((item: any) => ({
+      items: items.map((item: OrderItemInput) => ({
         productId: item.productId || null,
         name: item.name,
         image: item.image || "",

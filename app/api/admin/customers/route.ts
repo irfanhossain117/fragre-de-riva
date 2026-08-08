@@ -7,34 +7,37 @@ export async function GET() {
     await connectDB();
 
     // Fetch all orders to extract unique customer details
-    const orders = await Order.find({}).sort({ createdAt: -1 });
+    const orders = await Order.find({}).sort({ createdAt: -1 }).lean();
 
-    // Group orders by customer email/phone to aggregate real customer data
+    // Group orders by phone (Order model requires phone; email is optional so it's not reliable
+    // as a grouping key). Previously this read order.email/order.fullName/order.phone/order.totalPrice
+    // which don't exist on the Order schema (real fields live under order.customer.*), so every order
+    // fell back to the same "N/A" key and merged into one fake customer.
     const customerMap = new Map();
 
     orders.forEach((order) => {
-      const email = order.email || order.customerEmail || "N/A";
-      const name = order.fullName || order.customerName || "Valued Customer";
-      const phone = order.phone || order.customerPhone || "N/A";
+      const phone = order.customer?.phone || "N/A";
+      const name = order.customer?.name || "Valued Customer";
+      const email = order.customer?.email || "N/A";
 
-      if (!customerMap.has(email)) {
-        customerMap.set(email, {
-          id: order._id,
+      if (!customerMap.has(phone)) {
+        customerMap.set(phone, {
+          id: order._id.toString(),
           name,
           email,
           phone,
           ordersCount: 0,
           totalSpent: 0,
-          joinedDate: order.createdAt 
-            ? new Date(order.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) 
+          joinedDate: order.createdAt
+            ? new Date(order.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
             : "Recent",
           status: "Active",
         });
       }
 
-      const customer = customerMap.get(email);
+      const customer = customerMap.get(phone);
       customer.ordersCount += 1;
-      customer.totalSpent += (order.totalPrice || order.totalAmount || 0);
+      customer.totalSpent += order.total || 0;
     });
 
     // Convert map to array and format totalSpent currency

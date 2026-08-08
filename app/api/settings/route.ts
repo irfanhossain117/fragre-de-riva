@@ -13,9 +13,16 @@ export async function GET() {
       // Default settings if not found
       settings = await Settings.create({
         storeName: "Fragré De Riva",
-        supportEmail: "support@fragrederiva.com",
+        supportEmail: "connect.irfanhossain@gmail.com",
         instagramImages: [],
       });
+    }
+
+    // যদি আগের পুরনো default email (support@fragrederiva.com) DB-তে থেকে যায়, সেটাকে
+    // নতুন default (connect.irfanhossain@gmail.com) দিয়ে এক-বার auto-update করে দেওয়া হচ্ছে।
+    if (settings.supportEmail === "support@fragrederiva.com") {
+      settings.supportEmail = "connect.irfanhossain@gmail.com";
+      await settings.save();
     }
 
     const safeSettings = {

@@ -175,7 +175,7 @@ export default function CartDrawer({
 
           {cart.length > 0 && (
             <div className="mb-4 sm:mb-6 min-w-0">
-              <CouponBox />
+              <CouponBox subtotal={subtotal} />
             </div>
           )}
 

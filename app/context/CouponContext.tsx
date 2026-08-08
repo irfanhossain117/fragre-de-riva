@@ -8,11 +8,15 @@ import {
   ReactNode,
 } from "react";
 
-import { coupons, Coupon } from "../components/coupons";
+export type Coupon = {
+  code: string;
+  type: "percent" | "fixed";
+  value: number;
+};
 
 type CouponContextType = {
   coupon: Coupon | null;
-  applyCoupon: (code: string) => boolean;
+  applyCoupon: (code: string, subtotal?: number) => Promise<{ success: boolean; message?: string }>;
   removeCoupon: () => void;
 };
 
@@ -45,19 +49,27 @@ export function CouponProvider({
     }
   }, [coupon]);
 
-  function applyCoupon(code: string) {
-    const found = coupons.find(
-      (item) =>
-        item.code.toUpperCase() ===
-        code.trim().toUpperCase()
-    );
+  // কুপন এখন আর hardcoded local list থেকে না, বরং DB থেকে (Admin panel থেকে add/remove করা কুপন) validate হয়।
+  async function applyCoupon(code: string, subtotal?: number) {
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, subtotal }),
+      });
 
-    if (!found) {
-      return false;
+      const data = await res.json();
+
+      if (!data.success) {
+        return { success: false, message: data.message || "Invalid coupon code." };
+      }
+
+      setCoupon(data.coupon);
+      return { success: true };
+    } catch (error) {
+      console.error("Failed to apply coupon:", error);
+      return { success: false, message: "Something went wrong. Please try again." };
     }
-
-    setCoupon(found);
-    return true;
   }
 
   function removeCoupon() {

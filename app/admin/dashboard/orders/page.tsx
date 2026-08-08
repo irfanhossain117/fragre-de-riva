@@ -73,7 +73,7 @@ export default function OrdersPage() {
 
         {/* Status Filter Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
-          {["All", "Processing", "Shipped", "Delivered", "Cancelled"].map(
+          {["All", "Pending", "Confirmed", "Packing", "Shipped", "Delivered", "Cancelled"].map(
             (status) => (
               <button
                 key={status}
@@ -177,18 +177,22 @@ export default function OrdersPage() {
                             ? "border border-green-200 bg-green-50 text-green-700"
                             : order.orderStatus === "Shipped"
                             ? "border border-blue-200 bg-blue-50 text-blue-700"
-                            : order.orderStatus === "Processing"
+                            : order.orderStatus === "Packing"
+                            ? "border border-purple-200 bg-purple-50 text-purple-700"
+                            : order.orderStatus === "Confirmed"
                             ? "border border-amber-200 bg-amber-50 text-amber-700"
-                            : "border border-red-200 bg-red-50 text-red-700"
+                            : order.orderStatus === "Cancelled"
+                            ? "border border-red-200 bg-red-50 text-red-700"
+                            : "border border-gray-200 bg-gray-50 text-gray-600"
                         }`}
                       >
                         {order.orderStatus === "Delivered" && (
                           <CheckCircle2 size={13} />
                         )}
                         {order.orderStatus === "Shipped" && <Truck size={13} />}
-                        {order.orderStatus === "Processing" && (
-                          <Clock size={13} />
-                        )}
+                        {(order.orderStatus === "Pending" ||
+                          order.orderStatus === "Confirmed" ||
+                          order.orderStatus === "Packing") && <Clock size={13} />}
                         {order.orderStatus === "Cancelled" && (
                           <XCircle size={13} />
                         )}

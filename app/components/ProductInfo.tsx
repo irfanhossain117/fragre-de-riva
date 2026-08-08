@@ -150,7 +150,7 @@ export default function ProductInfo({ product }: Props) {
         </span>
 
         <span className="px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
-          🚚 Free Delivery
+          🚚 Country Wide Delivery
         </span>
 
         <span className="px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">

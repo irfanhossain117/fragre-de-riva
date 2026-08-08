@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCoupon } from "../context/CouponContext";
 
-export default function CouponBox() {
+export default function CouponBox({ subtotal }: { subtotal?: number }) {
   const {
     coupon,
     applyCoupon,
@@ -12,20 +12,23 @@ export default function CouponBox() {
 
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleApply() {
+  async function handleApply() {
     if (!code.trim()) {
       setMessage("Please enter a coupon code.");
       return;
     }
 
-    const success = applyCoupon(code);
+    setLoading(true);
+    const result = await applyCoupon(code, subtotal);
+    setLoading(false);
 
-    if (success) {
+    if (result.success) {
       setMessage("");
       setCode("");
     } else {
-      setMessage("❌ Invalid coupon code.");
+      setMessage(`❌ ${result.message || "Invalid coupon code."}`);
     }
   }
 
@@ -78,9 +81,10 @@ export default function CouponBox() {
 
             <button
               onClick={handleApply}
-              className="shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-[#A88442] text-white text-sm sm:text-base hover:opacity-90 transition"
+              disabled={loading}
+              className="shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-[#A88442] text-white text-sm sm:text-base hover:opacity-90 transition disabled:opacity-60"
             >
-              Apply
+              {loading ? "Checking..." : "Apply"}
             </button>
 
           </div>
