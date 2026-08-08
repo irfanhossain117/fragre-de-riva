@@ -1,30 +1,62 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { products } from "./products";
+type SearchProduct = {
+  _id: string;
+  slug: string;
+  name: string;
+  category: string;
+  image?: string;
+  images?: string[];
+  variants?: { volume: string; price: number; stock: number }[];
+};
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchProduct[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
+  // ৩০০ms debounce করে API কল করা হচ্ছে, যাতে প্রতিটা key-press এ আলাদা রিকোয়েস্ট না যায়
+  useEffect(() => {
+    const trimmed = query.trim();
 
-    const q = query.toLowerCase();
+    if (!trimmed) {
+      setResults([]);
+      return;
+    }
 
-    return products.filter((product) => {
-      return (
-        product.name.toLowerCase().includes(q) ||
-        product.category.toLowerCase().includes(q) ||
-        product.description.toLowerCase().includes(q) ||
-        product.topNotes.toLowerCase().includes(q) ||
-        product.heartNotes.toLowerCase().includes(q) ||
-        product.baseNotes.toLowerCase().includes(q)
-      );
-    });
+    const timeout = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `/api/products?published=true&search=${encodeURIComponent(trimmed)}`
+        );
+        const data = await res.json();
+        if (data.success) {
+          setResults(data.products);
+        }
+      } catch (error) {
+        console.error("Search failed:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
   }, [query]);
+
+  const formatted = useMemo(
+    () =>
+      results.map((product) => ({
+        ...product,
+        price: product.variants?.[0]?.price ?? 0,
+        image: product.image || product.images?.[0] || "/products/gugu.jpeg",
+      })),
+    [results]
+  );
 
   return (
     <div className="relative w-full max-w-md">
@@ -39,7 +71,13 @@ export default function SearchBar() {
       {query && (
         <div className="absolute left-0 right-0 mt-3 rounded-2xl bg-white shadow-2xl border border-[#EEE] overflow-hidden z-50 max-h-[420px] overflow-y-auto">
 
-          {results.length === 0 ? (
+          {loading ? (
+
+            <div className="p-6 text-center text-gray-500">
+              Searching...
+            </div>
+
+          ) : formatted.length === 0 ? (
 
             <div className="p-6 text-center text-gray-500">
               No products found.
@@ -47,10 +85,10 @@ export default function SearchBar() {
 
           ) : (
 
-            results.map((product) => (
+            formatted.map((product) => (
 
               <Link
-                key={product.id}
+                key={product._id}
                 href={`/product/${product.slug}`}
                 className="flex items-center gap-4 p-4 hover:bg-[#F8F4EE] transition"
                 onClick={() => setQuery("")}

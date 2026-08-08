@@ -4,11 +4,19 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-import { products } from "./products";
-
 type Props = {
   open: boolean;
   onClose: () => void;
+};
+
+type SearchProduct = {
+  _id: string;
+  slug: string;
+  name: string;
+  category: string;
+  image?: string;
+  images?: string[];
+  variants?: { volume: string; price: number; stock: number }[];
 };
 
 export default function SearchModal({
@@ -16,10 +24,13 @@ export default function SearchModal({
   onClose,
 }: Props) {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchProduct[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setResults([]);
     }
   }, [open]);
 
@@ -36,26 +47,46 @@ export default function SearchModal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
+  // ৩০০ms debounce করে আসল ডাটাবেজ থেকে প্রোডাক্ট সার্চ করা হচ্ছে
+  // (আগে এটা একটা পুরনো, হার্ডকোডেড ডামি প্রোডাক্ট লিস্ট থেকে সার্চ করত,
+  //  Admin panel থেকে অ্যাড করা আসল প্রোডাক্ট কখনো দেখাতো না)
+  useEffect(() => {
+    const trimmed = query.trim();
 
-    return products.filter((product) => {
-      const searchableText = [
-        product.name,
-        product.category,
-        product.description,
-        product.topNotes,
-        product.heartNotes,
-        product.baseNotes,
-        product.volume,
-      ]
-        .join(" ")
-        .toLowerCase();
+    if (!trimmed) {
+      setResults([]);
+      return;
+    }
 
-      return searchableText.includes(q);
-    });
+    const timeout = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `/api/products?published=true&search=${encodeURIComponent(trimmed)}`
+        );
+        const data = await res.json();
+        if (data.success) {
+          setResults(data.products);
+        }
+      } catch (error) {
+        console.error("Search failed:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeout);
   }, [query]);
+
+  const formatted = useMemo(
+    () =>
+      results.map((product) => ({
+        ...product,
+        price: product.variants?.[0]?.price ?? 0,
+        image: product.image || product.images?.[0] || "/products/gugu.jpeg",
+      })),
+    [results]
+  );
 
   if (!open) return null;
 
@@ -94,14 +125,18 @@ export default function SearchModal({
             <p className="p-6 text-gray-500">
               Start typing to search by name, category, or notes.
             </p>
-          ) : results.length === 0 ? (
+          ) : loading ? (
+            <p className="p-6 text-gray-500">
+              Searching...
+            </p>
+          ) : formatted.length === 0 ? (
             <p className="p-6 text-gray-500">
               No fragrance found.
             </p>
           ) : (
-            results.map((product) => (
+            formatted.map((product) => (
               <Link
-                key={product.id}
+                key={product._id}
                 href={`/product/${product.slug}`}
                 onClick={onClose}
                 className="flex items-center gap-4 px-6 py-4 hover:bg-[#F8F4EE] transition border-b border-[#F1E8D9]"

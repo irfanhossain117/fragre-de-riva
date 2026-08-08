@@ -11,8 +11,9 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category");
     const excludeId = searchParams.get("exclude");
     const publishedOnly = searchParams.get("published");
+    const search = searchParams.get("search");
 
-    let query: any = {};
+    const query: Record<string, unknown> = {};
 
     // পাবলিক পেজ (Shop, Related Products) থেকে ?published=true পাঠালে শুধু published প্রোডাক্ট দেখাবে।
     // Admin dashboard এই প্যারামিটার পাঠায় না, তাই draft সহ সব প্রোডাক্ট দেখতে পাবে।
@@ -23,6 +24,22 @@ export async function GET(req: NextRequest) {
     // যদি ক্যাটাগরি দেওয়া থাকে, কুয়েরিতে যুক্ত করুন
     if (category) {
       query.category = category;
+    }
+
+    // Search — name, brand, category, description এবং fragrance notes এর মধ্যে যেকোনো একটাতে
+    // মিলে গেলে সেই প্রোডাক্ট দেখাবে (case-insensitive, partial match)
+    if (search && search.trim()) {
+      const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(escaped, "i");
+      query.$or = [
+        { name: regex },
+        { brand: regex },
+        { category: regex },
+        { description: regex },
+        { topNotes: regex },
+        { heartNotes: regex },
+        { baseNotes: regex },
+      ];
     }
 
     // যদি কোনো আইডি এক্সক্লুড (বাদ) করতে বলা হয় (যেমন: Related Products এর জন্য)
