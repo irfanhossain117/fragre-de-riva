@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 const fallbackImages = [
-  "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1200",
-  "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1200",
-  "https://images.unsplash.com/photo-1615634262417-2b0e3f6f0d08?q=80&w=1200",
-  "https://images.unsplash.com/photo-1588405748880-12d1d2a59db9?q=80&w=1200",
+  "/products/logo.jpeg",
+  "/products/logo.jpeg",
+  "/products/logo.jpeg",
+  "/products/logo.jpeg",
 ];
 
 export default function InstagramGallery() {
